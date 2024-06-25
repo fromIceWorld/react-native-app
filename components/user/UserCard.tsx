@@ -1,4 +1,9 @@
+import { Text } from "react-native";
 const UserCard = () => {
-  return <>UserCard</>;
+  return (
+    <>
+      <Text>UserCard</Text>
+    </>
+  );
 };
 export default UserCard;
