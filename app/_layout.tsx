@@ -14,7 +14,7 @@ import { Text } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
 import useDrawerStore from "@/Store/drawerState";
 import UserDrawer from "@/components/UserDrawer/Drawer";
-
+import MyDrawer from '@/components/MyDrawer/MyDrawer'
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -62,12 +62,19 @@ function RootLayoutNav() {
   };
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Drawer
+      <MyDrawer>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        </Stack>
+      </MyDrawer>
+      {/* <Drawer
         type="static"
         open={open}
         content={<UserDrawer></UserDrawer>}
         onClose={() => closeDrawer()}
         openDrawerOffset={70}
+        panOpenMask={70}
         tapToClose={true}
         styles={{ ...drawerStyles, main }}
       >
@@ -75,20 +82,22 @@ function RootLayoutNav() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         </Stack>
-      </Drawer>
+      </Drawer> */}
     </ThemeProvider>
   );
 }
 
 const drawerStyles = {
   drawer: {
-    backgroudColor: "red",
-    shadowColor: "red",
-    shadowOpacity: 0.8,
+    color: "blue",
     shadowRadius: 3,
     opacity: 0.8,
     paddingTop: 50,
     paddingLeft: 5,
   },
-  main: { paddingLeft: 0, padding: 30 },
+  main: { 
+    paddingLeft: 0, 
+    padding: 30,   
+    backgroudColor: "red",
+},
 };

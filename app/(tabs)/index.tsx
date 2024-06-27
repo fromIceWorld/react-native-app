@@ -13,11 +13,11 @@ export default function TabOneScreen() {
     onStartShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
-      setLeft(0);
+      // setLeft(0);
       // 开始滑动时的处理逻辑
     },
     onPanResponderMove: (evt, gestureState) => {
-      openDrawer();
+      // openDrawer();
       // setLeft(Math.max(gestureState.dx, 0));
       // // 正在滑动时的处理逻辑
     },
