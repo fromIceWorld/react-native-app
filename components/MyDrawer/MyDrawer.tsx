@@ -1,6 +1,5 @@
 import { useState,useRef,useMemo, useEffect  } from "react"
 import { Text,PanResponder, View,StyleSheet,Dimensions,Animated ,TouchableHighlight,LogBox} from "react-native"
-import { Link } from "expo-router";
 
 LogBox.ignoreLogs([])
 
@@ -46,7 +45,11 @@ interface Props {
     type?:Mode,
     side?:Side,
     panThreshold?:number, //平移阈值
-    children?:any
+    content?:any
+    children?:any,
+    onOpen?:()=>void,
+    onClose?:()=>void,
+
 }
 let defaultProps:Props = {
     open:false,
@@ -57,7 +60,7 @@ let defaultProps:Props = {
 
 const MyDrawer = (props:Props)=>{
     let config = useRef({...defaultProps,...props}).current,
-        {open,type,side,panThreshold} = config;
+        {open,type,side,panThreshold,content,onClose,onOpen} = config;
     const maskRef = useRef(null)
     let [onTouch,setOnTouch] = useState(false);
     let [isOpen,setState] = useState(open!);
@@ -82,8 +85,7 @@ const MyDrawer = (props:Props)=>{
     // style
     const containerStyle = {...style['container']},
           drawerStyle = {...style['drawer'],...drawerDefaultStyle},
-          mainStyle= {...style['main']}
-          ;
+          mainStyle= {...style['main']};
     
     const maskEvent = Animated.event([
         mask
@@ -109,9 +111,12 @@ const MyDrawer = (props:Props)=>{
 
     } 
     const panResponder = useRef(PanResponder.create({
-        onStartShouldSetPanResponder:(evt,gestureState)=>true,
+        onStartShouldSetPanResponder:(evt,gestureState)=>false,
         onMoveShouldSetPanResponder:(evt,gestureState)=>true,
         onPanResponderGrant:(evt,gestureState)=>{
+        },
+        onPanResponderReject:(evt,gestureState)=>{
+           
         },
         onPanResponderMove: (evt,gestureState)=>{
             let {dx,dy} = gestureState;
@@ -144,75 +149,70 @@ const MyDrawer = (props:Props)=>{
             let p = mapMask(side!,dx,dy,panThreshold!)
             maskEvent(p)
         },
-          onPanResponderRelease: (evt,gestureState) => {
-            const {dx,dy,vx,vy} = gestureState;
-            let nextXpositive =0,nextXnegative = 0,nextYpositive = 0,nextYnegative = 0;
-            switch(side){
-                case 'left':
-                    nextXpositive = vx==0 || dx == 0 ? offset.x
-                                         :  vx > 0.3 || dx > 100 ? panThreshold!: 0 ;
-                    break;                         
-                case 'right':
-                    nextXnegative = vx == 0 || dx == 0 ? offset.x
-                                          : vx < -0.3 || dx <-100  ? -panThreshold! :0;
-                    break;                         
-                case 'top':
-                    nextYpositive = vy==0 || dy == 0 ? offset.y 
-                                         :  vy > 0.3 || dy > 100 ? panThreshold!: 0 ;
-                    break;                         
-                case 'bottom':
-                    nextYnegative = vy == 0 || dy == 0 ? offset.y
-                                          : vy <-0.3 || dy <-100  ? -panThreshold! :0;
-                    break;   
-            }
-            if(nextXpositive +  nextXnegative + nextYpositive + nextYnegative == 0){
-                Animated.spring(
-                    mask, // Auto-multiplexed
-                    {toValue:0,speed:28,bounciness:1,useNativeDriver: true}, // Back to zero
-                  ).start();
-                    
-            }else{
-                Animated.spring(
-                    mask, // Auto-multiplexed
-                    {toValue:panThreshold!,speed:28,bounciness:1,useNativeDriver: true}, // Back to zero
-                  ).start();
-               
-            }
-            offset.x = nextXpositive || nextXnegative;
-            offset.y = nextYpositive || nextYnegative;
+        onPanResponderRelease: (evt,gestureState) => {
+        const {dx,dy,vx,vy} = gestureState;
+        let nextXpositive =0,nextXnegative = 0,nextYpositive = 0,nextYnegative = 0;
+        switch(side){
+            case 'left':
+                nextXpositive = vx==0 || dx == 0 ? offset.x
+                                        :  vx > 0.3 || dx > 100 ? panThreshold!: 0 ;
+                break;                         
+            case 'right':
+                nextXnegative = vx == 0 || dx == 0 ? offset.x
+                                        : vx < -0.3 || dx <-100  ? -panThreshold! :0;
+                break;                         
+            case 'top':
+                nextYpositive = vy==0 || dy == 0 ? offset.y 
+                                        :  vy > 0.3 || dy > 100 ? panThreshold!: 0 ;
+                break;                         
+            case 'bottom':
+                nextYnegative = vy == 0 || dy == 0 ? offset.y
+                                        : vy <-0.3 || dy <-100  ? -panThreshold! :0;
+                break;   
+        }
+        if(nextXpositive +  nextXnegative + nextYpositive + nextYnegative == 0){
+            onClose!()
             Animated.spring(
-                pan, // Auto-multiplexed
-                {toValue: {x: offset.x , y: offset.y}, speed:48,bounciness:0,useNativeDriver: true}, // Back to zero
-              ).start(({finished})=>{
+                mask, // Auto-multiplexed
+                {toValue:0,speed:28,bounciness:1,useNativeDriver: true}, // Back to zero
+                ).start();
+                
+        }else{
+            onOpen!()
+            Animated.spring(
+                mask, // Auto-multiplexed
+                {toValue:panThreshold!,speed:28,bounciness:1,useNativeDriver: true}, // Back to zero
+                ).start();
+            
+        }
+        offset.x = nextXpositive || nextXnegative;
+        offset.y = nextYpositive || nextYnegative;
+        Animated.spring(
+            pan, // Auto-multiplexed
+            {toValue: {x: offset.x , y: offset.y}, speed:148,bounciness:0,useNativeDriver: true}, // Back to zero
+            ).start(({finished})=>{
                 if(nextXpositive +  nextXnegative + nextYpositive + nextYnegative == 0){
                     setState(false)
                     setOnTouch(false)
                 }else{
                     setState(true)
                 }
-              });
+            });
 
-          }
+        }
     })).current
-    
+    const maskPanResponder = useRef(PanResponder.create({
+        onStartShouldSetPanResponder:(evt,gestureState)=>false,
+        onMoveShouldSetPanResponder:(evt,gestureState)=>false,
+    })).current
     return <Animated.View style={{...containerStyle,transform: [{ translateX: pan.x },{translateY:pan.y}]}}  {...panResponder.panHandlers}
             >
                 <Animated.View  style={drawerStyle} 
                                >
-                    <TouchableHighlight >
-                        <View >
-                         {/* @ts-ignore */}
-                            <Text>{offset.x}|{offset.y}</Text>
-                            {/* @ts-ignore */}
-                            <Text style={{padding:60}}>isOpen:{isOpen + '1'}</Text>
-                            <Link href="/four">
-                                <Text>GO 4</Text>
-                            </Link>
-                            </View>
-                    </TouchableHighlight>
+                    {content}
                 </Animated.View>
                 {/*  @ts-ignore 遮罩*/  }
-                <Animated.View ref={maskRef} style={{...style['mask'],opacity:maskOpacity,zIndex:onTouch ? 10 : 0}}>
+                <Animated.View {...maskPanResponder.panHandlers} onTouchStart={()=>console.log('press')} ref={maskRef} style={{...style['mask'],opacity:maskOpacity,zIndex:onTouch ? 10 : 0}}>
                 </Animated.View>
                 <View style={mainStyle} >
                     {props.children}

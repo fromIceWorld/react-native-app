@@ -15,10 +15,9 @@ const UserAvatar = () => {
 
 const Style = StyleSheet.create({
   bg: {
-    marginLeft: 15,
   },
   avatar: {
-    borderRadius: "50%",
+    borderRadius: 48,
   },
 });
 

@@ -1,7 +1,7 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Pressable, View, Text, TouchableOpacity } from "react-native";
+import { Pressable, View, Text, TouchableOpacity,StyleSheet } from "react-native";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
@@ -17,8 +17,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const open = useDrawerStore((state: any) => state.open),
-    openDrawer = useDrawerStore((state: any) => state.openDrawer);
+
   return (
     <Tabs
       screenOptions={{
@@ -31,11 +30,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
+          title: "One",
+          headerStyle:{shadowOffset:{width:0,height:0}},
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => openDrawer()}>
-              {open ? "" : <UserAvatar></UserAvatar>}
+            <TouchableOpacity style={{paddingLeft:10}} >
+              {<UserAvatar></UserAvatar>}
             </TouchableOpacity>
           ),
         }}
@@ -78,3 +78,9 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const style = StyleSheet.create({
+  one:{
+    borderBottomColor:'red',
+  }
+})

@@ -53,16 +53,20 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const open = useDrawerStore((state) => state.open),
-    left = useDrawerStore((state: any) => state.left),
-    closeDrawer = useDrawerStore((state) => state.closeDrawer);
+  const setOpen = useDrawerStore((state: any) => state.setOpen);
   const colorScheme = useColorScheme();
-  const main = {
-    paddingLeft: left,
-  };
+  
+  function onDrawerOpen(){
+    setOpen(true)
+    console.log('onDrawerOpen')
+  }
+  function onDrawerClose(){
+    setOpen(false)
+    console.log('onDrawerClose')
+  }
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <MyDrawer>
+      <MyDrawer content = {<UserDrawer></UserDrawer>} onOpen={onDrawerOpen} onClose={onDrawerClose}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />

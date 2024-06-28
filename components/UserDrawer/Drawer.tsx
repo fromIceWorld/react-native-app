@@ -1,19 +1,27 @@
-import Drawer from "react-native-drawer";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, StyleSheet,TouchableHighlight,TouchableOpacity } from "react-native";
+import { Text, View } from "@/components/Themed";
+import { Link } from "expo-router";
+
+
 import UserAvatar from "../user/UserAvatar";
 
-interface Prop {
-  open: boolean;
-}
 
-const UserDrawer = (prop: Prop) => {
-  let [drawerOpen, setDrawerStatus] = useState(false);
+const UserDrawer = () => {
   return (
-    <View>
-      <UserAvatar></UserAvatar>
-      <Text style={UserStyles['name']}>神经元</Text>
-      <Text style={UserStyles['id']}>@12424232123234</Text>
+    <View style={UserStyles['container']}>
+      <TouchableOpacity>
+        <UserAvatar></UserAvatar>
+      </TouchableOpacity>
+      <TouchableOpacity style={UserStyles['name']}>
+        <View>
+          <Text >John Doe</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity  style={UserStyles['id']}>
+        <Text >@President</Text>
+      </TouchableOpacity>
+      
       <ScrollView>
         
       </ScrollView>
@@ -23,11 +31,15 @@ const UserDrawer = (prop: Prop) => {
 export default UserDrawer;
 
 const UserStyles = {
+  container:{
+    paddingTop:50,
+    paddingLeft:20,
+  },
   name: {
     paddingTop: 10,
-    paddingLeft: 10,
+    fontSize:16
   },
   id: { 
-    paddingLeft: 10,
+    paddingTop:2
 },
 };
