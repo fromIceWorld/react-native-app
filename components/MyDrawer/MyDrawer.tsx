@@ -100,6 +100,7 @@ const MyDrawer = (props: Props) => {
   const maskEvent = Animated.event([mask], {
     useNativeDriver: false,
   });
+  console.log(typeof maskEvent);
   const moveEvent = Animated.event([null, { dx: pan.x, dy: pan.y }], {
     useNativeDriver: false,
   });
@@ -174,7 +175,7 @@ const MyDrawer = (props: Props) => {
         switch (side) {
           case "left":
             nextXpositive =
-              vx < -0.3 || dx < -100
+              vx == 0 || dx == 0
                 ? offset.x
                 : vx > 0.3 || dx > 100
                 ? panThreshold!
