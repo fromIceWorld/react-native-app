@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, PanResponder, Animated } from "react-native";
 import { useState, useRef } from "react";
-
 const tabs = [
   {
     text: "1",
@@ -24,8 +23,13 @@ const tabView = () => {
     console.log(event.nativeEvent.layout.width);
     const layoutWidth = event.nativeEvent.layout.width;
     viewWidth.current = layoutWidth;
-    barXY.setOffset({ x: viewWidth.current / 6, y: 0 });
-    barXY.flattenOffset();
+    // 初始位置
+    Animated.spring(barXY.x, {
+      toValue: layoutWidth / 6 - 30,
+      speed: 15,
+      bounciness: 3,
+      useNativeDriver: true,
+    }).start();
   };
   const panXY = useRef(new Animated.ValueXY()).current;
   const barXY = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current,
@@ -114,10 +118,21 @@ const tabView = () => {
   return (
     <>
       <Animated.View style={Style["tabHeader"]}>
-        <Text style={Style["scrollLabel"]}>123</Text>
-        <Text style={Style["scrollLabel"]}>123</Text>
-        <Text style={Style["scrollLabel"]}>123</Text>
-
+        <Text
+          style={{ ...Style["scrollLabel"], opacity: index == 0 ? 1 : 0.5 }}
+        >
+          广场
+        </Text>
+        <Text
+          style={{ ...Style["scrollLabel"], opacity: index == 1 ? 1 : 0.5 }}
+        >
+          地图
+        </Text>
+        <Text
+          style={{ ...Style["scrollLabel"], opacity: index == 2 ? 1 : 0.5 }}
+        >
+          123
+        </Text>
         <Animated.View
           style={{
             ...Style["scrollBar"],
@@ -146,7 +161,6 @@ const tabView = () => {
           </View>
         ))}
       </Animated.View>
-      <Text>{index}</Text>
     </>
   );
 };
@@ -154,10 +168,19 @@ const Style = StyleSheet.create({
   tabHeader: {
     display: "flex",
     flexDirection: "row",
+    backgroundColor: "#fff",
     justifyContent: "space-around",
+    borderBottomWidth: 1,
+
+    borderBottomHeight: 10,
+    borderBottomColor: "#0505050f",
+    color: "red",
   },
   scrollLabel: {
     textAlign: "center",
+    fontSize: 16,
+    fontWeight: 500,
+    padding: 12,
     width: "33%",
   },
   scrollBar: {
