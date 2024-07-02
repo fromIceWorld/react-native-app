@@ -82,12 +82,9 @@ const tabView = () => {
       panEvent({ dx: index * viewWidth.current * -1 + dx, dy: 0 });
     },
     onPanResponderTerminate: (evt, gestureState) => {
-      setPanReleasse(false);
-    },
-    onPanResponderRelease: (evt, gestureState) => {
+      // 动画被打断后，需要复位
       const { dx, dy, vx } = gestureState;
       let sign = -Math.sign(dx);
-      console.log(sign);
       // 越界
       if (
         Math.abs(dx) < 30 ||
@@ -98,7 +95,35 @@ const tabView = () => {
       }
 
       let nextIndex = index + sign;
-      console.log(index, sign, nextIndex);
+      setIndex(nextIndex);
+      Animated.spring(panXY.x, {
+        toValue: viewWidth.current * nextIndex * -1,
+        speed: 15,
+        bounciness: 3,
+        useNativeDriver: true,
+      }).start();
+      Animated.spring(barXY.x, {
+        toValue:
+          (viewWidth.current * nextIndex) / 3 + viewWidth.current / 6 - 30,
+        speed: 15,
+        bounciness: 3,
+        useNativeDriver: true,
+      }).start();
+      setPanReleasse(false);
+    },
+    onPanResponderRelease: (evt, gestureState) => {
+      const { dx, dy, vx } = gestureState;
+      let sign = -Math.sign(dx);
+      // 越界
+      if (
+        Math.abs(dx) < 30 ||
+        (index == 0 && sign < 0) ||
+        (index == 2 && sign > 0)
+      ) {
+        sign = 0;
+      }
+
+      let nextIndex = index + sign;
       setIndex(nextIndex);
       Animated.spring(panXY.x, {
         toValue: viewWidth.current * nextIndex * -1,

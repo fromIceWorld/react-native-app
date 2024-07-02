@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect, memo } from "react";
 import {
   Text,
   PanResponder,
@@ -63,12 +63,13 @@ let defaultProps: Props = {
   panThreshold: Dimensions.get("window").width - 50,
 };
 
-const MyDrawer = (props: Props) => {
+const MyDrawer = memo((props: Props) => {
   let config = useRef({ ...defaultProps, ...props }).current,
     { open, type, side, panThreshold, content, onClose, onOpen } = config;
   const maskRef = useRef(null);
   let [onTouch, setOnTouch] = useState(false);
   let [isOpen, setState] = useState(open!);
+  console.log('isOpen',isOpen)
   const { width: clientWidth, height: clientHeight } = Dimensions.get("window");
   // 转化输入的平移阈值：  小数:百分比宽度,整数:真实宽度。
   panThreshold = tansformPanThreshold(
@@ -100,7 +101,6 @@ const MyDrawer = (props: Props) => {
   const maskEvent = Animated.event([mask], {
     useNativeDriver: false,
   });
-  console.log(typeof maskEvent);
   const moveEvent = Animated.event([null, { dx: pan.x, dy: pan.y }], {
     useNativeDriver: false,
   });
@@ -116,8 +116,7 @@ const MyDrawer = (props: Props) => {
     ).start();
     maskEvent(panThreshold);
   }
-  const panResponder = useRef(
-    PanResponder.create({
+  const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => false,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {},
@@ -162,7 +161,7 @@ const MyDrawer = (props: Props) => {
         }
         setOnTouch(true);
         moveEvent(evt, { dx: dx + offset.x, dy: dy + offset.y });
-        let p = mapMask(side!, dx, dy, panThreshold!);
+        let p = mapMask(side!, dx, dy, panThreshold!,isOpen);
         maskEvent(p);
       },
       onPanResponderRelease: (evt, gestureState) => {
@@ -171,7 +170,6 @@ const MyDrawer = (props: Props) => {
           nextXnegative = 0,
           nextYpositive = 0,
           nextYnegative = 0;
-        console.log(offset.x);
         switch (side) {
           case "left":
             nextXpositive =
@@ -229,6 +227,7 @@ const MyDrawer = (props: Props) => {
             } // Back to zero
           ).start();
         }
+        mask.flattenOffset()
         offset.x = nextXpositive || nextXnegative;
         offset.y = nextYpositive || nextYnegative;
         Animated.spring(
@@ -251,8 +250,7 @@ const MyDrawer = (props: Props) => {
           }
         });
       },
-    })
-  ).current;
+    });
   const maskPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => false,
@@ -282,7 +280,7 @@ const MyDrawer = (props: Props) => {
       <View style={mainStyle}>{props.children}</View>
     </Animated.View>
   );
-};
+});
 
 // 将输入的 平移阈值，转化为真实平移
 function tansformPanThreshold(
@@ -358,20 +356,20 @@ function getDefaultPosition(isOpen: boolean, side: Side, panThreshold: number) {
 }
 
 // 根据开关 映射遮罩
-function mapMask(side: Side, dx: number, dy: number, panThreshold: number) {
-  if (["left", "top"].includes(side)) {
-    if (dx > 0 || dy > 0) {
+function mapMask(side: Side, dx: number, dy: number, panThreshold: number,isOpen:boolean) {
+  if(!isOpen){
+    if (dx >= 0 || dy >= 0) {
       return Math.min((dx || dy) * 3, panThreshold);
-    } else {
+    } else if( dx <0 || dy <0) {
       return panThreshold - Math.abs(dx || dy);
     }
-  }
-  if (["right", "bottom"].includes(side)) {
-    if (dx < 0 || dy < 0) {
-      return Math.abs(dx || dy);
-    } else {
+  }else{
+    if (dx <= 0 || dy <= 0) {
       return panThreshold - Math.abs(dx || dy);
+    } else if( dx > 0 || dy > 0) {
+      return Math.min((dx || dy) * 3, panThreshold);
     }
   }
+ 
 }
 export default MyDrawer;

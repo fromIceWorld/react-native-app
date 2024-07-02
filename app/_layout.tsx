@@ -58,11 +58,9 @@ function RootLayoutNav() {
   
   function onDrawerOpen(){
     setOpen(true)
-    console.log('onDrawerOpen')
   }
   function onDrawerClose(){
     setOpen(false)
-    console.log('onDrawerClose')
   }
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
