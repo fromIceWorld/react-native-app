@@ -7,8 +7,8 @@ const UserAvatar = () => {
       <Avatar
         avatarStyle={Style["avatar"]}
         size={36}
-        source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-      ></Avatar>
+        source={require('@/assets/images/adaptive-icon.png')}
+        ></Avatar>
     </View>
   );
 };

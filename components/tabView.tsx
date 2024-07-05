@@ -1,22 +1,17 @@
 import { View, Text, StyleSheet, PanResponder, Animated } from "react-native";
 import { useState, useRef } from "react";
-const tabs = [
-  {
-    text: "1",
-    color: "#fff",
-  },
-  {
-    text: "2",
-    color: "#fff",
-  },
-  {
-    text: "3",
-    color: "#fff",
-  },
-];
 
-const tabView = () => {
-  const [index, setIndex] = useState(0);
+interface TabProp{
+  label:string,
+  component:React.JSX.Element
+}
+interface TabsProp{
+  tabs:TabProp[]
+}
+
+const TabView = (prop:TabsProp) => {
+  const tabCount = useRef(prop.tabs.length)
+  const [tabIndex, setTabIndex] = useState(0);
   const [releasePan, setPanReleasse] = useState(false);
   const viewWidth = useRef(0);
   const handleLayout = (event: any) => {
@@ -25,7 +20,7 @@ const tabView = () => {
     viewWidth.current = layoutWidth;
     // 初始位置
     Animated.spring(barXY.x, {
-      toValue: layoutWidth / 6 - 30,
+      toValue: layoutWidth / (tabCount.current*2) - 30,
       speed: 15,
       bounciness: 3,
       useNativeDriver: true,
@@ -55,31 +50,41 @@ const tabView = () => {
       useNativeDriver: false,
     }
   );
-  console.log(typeof panEvent);
+
   const _panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: (evt, gestureState) => true,
+    onStartShouldSetPanResponder: (evt, gestureState) => false,
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
+    onPanResponderReject: (evt, gestureState) => {
+
+      console.log('drawer reject')
+    },
     onPanResponderTerminationRequest: (evt, gestureState) => {
       return releasePan;
     },
-    onPanResponderGrant: (evt, gestureState) => {},
+    onPanResponderGrant: (evt, gestureState) => {
+      console.log('tabview grant')
+    },
     onPanResponderMove: (evt, gestureState) => {
-      const { dx, vx } = gestureState;
+      console.log('drawer onMove')
+
+      const { dx,dy, vx } = gestureState;
       // 当在边界滑动时，交出控制权
-      if ((index == 0 && dx >= 0) || (index == 2 && dx <= 0)) {
+      if((tabIndex == 0 && dx >= 0 || tabIndex == tabCount.current-1 && dx <=0) && Math.abs(dx) >= Math.abs(dy))
+      {
         setPanReleasse(true);
+        return 
       }
-      if (Math.abs(dx) < 20) {
+      // // tabView是左右切换的状态。当向上下滑动时，忽略切换
+      if (Math.abs(dy) >= Math.abs(dx) ) {
         return;
       }
       barEvent({
         dx:
-          (index * viewWidth.current + dx * -1) / 3 +
-          viewWidth.current / 6 -
-          30,
+          (tabIndex * viewWidth.current + dx * -1) / tabCount.current +
+          viewWidth.current / (tabCount.current*2) -30,
         dy: 0,
       });
-      panEvent({ dx: index * viewWidth.current * -1 + dx, dy: 0 });
+      panEvent({ dx: tabIndex * viewWidth.current * -1 + dx, dy: 0 });
     },
     onPanResponderTerminate: (evt, gestureState) => {
       // 动画被打断后，需要复位
@@ -87,15 +92,15 @@ const tabView = () => {
       let sign = -Math.sign(dx);
       // 越界
       if (
-        Math.abs(dx) < 30 ||
-        (index == 0 && sign < 0) ||
-        (index == 2 && sign > 0)
+        Math.abs(dy) > Math.abs(dx) ||
+        (tabIndex == 0 && sign < 0) ||
+        (tabIndex == tabCount.current-1 && sign > 0)
       ) {
         sign = 0;
       }
 
-      let nextIndex = index + sign;
-      setIndex(nextIndex);
+      let nextIndex = tabIndex + sign;
+      setTabIndex(nextIndex);
       Animated.spring(panXY.x, {
         toValue: viewWidth.current * nextIndex * -1,
         speed: 15,
@@ -104,7 +109,7 @@ const tabView = () => {
       }).start();
       Animated.spring(barXY.x, {
         toValue:
-          (viewWidth.current * nextIndex) / 3 + viewWidth.current / 6 - 30,
+          (viewWidth.current * nextIndex) / tabCount.current + viewWidth.current / (tabCount.current*2) -30 ,
         speed: 15,
         bounciness: 3,
         useNativeDriver: true,
@@ -112,19 +117,21 @@ const tabView = () => {
       setPanReleasse(false);
     },
     onPanResponderRelease: (evt, gestureState) => {
+      console.log('drawer release')
+
       const { dx, dy, vx } = gestureState;
       let sign = -Math.sign(dx);
       // 越界
       if (
-        Math.abs(dx) < 30 ||
-        (index == 0 && sign < 0) ||
-        (index == 2 && sign > 0)
+        Math.abs(dy) > Math.abs(dx) ||
+        (tabIndex == 0 && sign < 0) ||
+        (tabIndex == tabCount.current -1 && sign > 0)
       ) {
         sign = 0;
       }
 
-      let nextIndex = index + sign;
-      setIndex(nextIndex);
+      let nextIndex = tabIndex + sign;
+      setTabIndex(nextIndex);
       Animated.spring(panXY.x, {
         toValue: viewWidth.current * nextIndex * -1,
         speed: 15,
@@ -133,7 +140,7 @@ const tabView = () => {
       }).start();
       Animated.spring(barXY.x, {
         toValue:
-          (viewWidth.current * nextIndex) / 3 + viewWidth.current / 6 - 30,
+          (viewWidth.current * nextIndex) / tabCount.current + viewWidth.current / (tabCount.current * 2) -30,
         speed: 15,
         bounciness: 3,
         useNativeDriver: true,
@@ -143,28 +150,20 @@ const tabView = () => {
   return (
     <>
       <Animated.View style={Style["tabHeader"]}>
-        <Text
-          style={{ ...Style["scrollLabel"], opacity: index == 0 ? 1 : 0.5 }}
+        {prop.tabs.map((item,index)=>
+          <Text
+          key={item.label}
+          style={{ ...Style["scrollLabel"], opacity: index == tabIndex ? 1 : 0.5 }}
         >
-          广场
+          {item.label}
         </Text>
-        <Text
-          style={{ ...Style["scrollLabel"], opacity: index == 1 ? 1 : 0.5 }}
-        >
-          地图
-        </Text>
-        <Text
-          style={{ ...Style["scrollLabel"], opacity: index == 2 ? 1 : 0.5 }}
-        >
-          123
-        </Text>
+        )}
         <Animated.View
           style={{
             ...Style["scrollBar"],
             transform: [{ translateX: barXY.x }],
           }}
         >
-          <Text>2</Text>
         </Animated.View>
       </Animated.View>
       <Animated.View
@@ -175,14 +174,12 @@ const tabView = () => {
         }}
         {..._panResponder.panHandlers}
       >
-        {tabs.map((item) => (
+        {prop.tabs.map((item) => (
           <View
-            key={item.text}
-            style={{ ...Style["tabOne"], backgroundColor: item.color }}
+            key={item.label}
+            style={Style["tabOne"] }
           >
-            <Text>
-              {item.text} | {index}
-            </Text>
+            {item.component}
           </View>
         ))}
       </Animated.View>
@@ -196,8 +193,6 @@ const Style = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "space-around",
     borderBottomWidth: 1,
-
-    borderBottomHeight: 10,
     borderBottomColor: "#0505050f",
     color: "red",
   },
@@ -212,6 +207,7 @@ const Style = StyleSheet.create({
     width: 60,
     height: 3,
     position: "absolute",
+    left:0,
     bottom: 0,
     backgroundColor: "#1677ff",
     borderRadius: 4,
@@ -219,11 +215,14 @@ const Style = StyleSheet.create({
   tabContainer: {
     display: "flex",
     flexDirection: "row",
-    height: 400,
+    height: '100%',
     backgroundColor: "red",
   },
   tabOne: {
     width: "100%",
+    backgroundColor: '#fff'
   },
 });
-export default tabView;
+
+
+export default TabView;

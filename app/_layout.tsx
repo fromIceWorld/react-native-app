@@ -9,8 +9,6 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import Drawer from "react-native-drawer";
-import { Text } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
 import useDrawerStore from "@/Store/drawerState";
 import UserDrawer from "@/components/UserDrawer/Drawer";
@@ -64,7 +62,7 @@ function RootLayoutNav() {
   }
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <MyDrawer content = {<UserDrawer></UserDrawer>} onOpen={onDrawerOpen} onClose={onDrawerClose}>
+      <MyDrawer  content = {<UserDrawer></UserDrawer>} onOpen={onDrawerOpen} onClose={onDrawerClose}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />

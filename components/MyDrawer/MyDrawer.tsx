@@ -28,12 +28,12 @@ const style = StyleSheet.create({
   },
   mask: {
     position: "absolute",
-    backgroundColor: "#000",
     width: "100%",
     height: "100%",
     left: 0,
     top: 0,
     zIndex: 1,
+    backgroundColor: "#000",
   },
   main: {
     backgroundColor: "red",
@@ -69,7 +69,6 @@ const MyDrawer = memo((props: Props) => {
   const maskRef = useRef(null);
   let [onTouch, setOnTouch] = useState(false);
   let [isOpen, setState] = useState(open!);
-  console.log('isOpen',isOpen)
   const { width: clientWidth, height: clientHeight } = Dimensions.get("window");
   // 转化输入的平移阈值：  小数:百分比宽度,整数:真实宽度。
   panThreshold = tansformPanThreshold(
@@ -117,11 +116,25 @@ const MyDrawer = memo((props: Props) => {
     maskEvent(panThreshold);
   }
   const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {},
-      onPanResponderReject: (evt, gestureState) => {},
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        console.log('start')
+        return false
+      },
+      onMoveShouldSetPanResponderCapture:()=>false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // @ts-ignore
+        console.log('drawer should move')
+
+        return true
+      },
+      onPanResponderGrant: (evt, gestureState) => {
+        console.log('drawer grant')
+      },
+      onPanResponderReject: (evt, gestureState) => {
+        console.log('drawer reject')
+      },
       onPanResponderMove: (evt, gestureState) => {
+        console.log('drawer onMove')
         let { dx, dy } = gestureState;
         // 左右拉动时，阻止上下动
         if (["left", "right"].includes(side!)) {
@@ -165,6 +178,7 @@ const MyDrawer = memo((props: Props) => {
         maskEvent(p);
       },
       onPanResponderRelease: (evt, gestureState) => {
+        console.log('drawer release')
         const { dx, dy, vx, vy } = gestureState;
         let nextXpositive = 0,
           nextXnegative = 0,
@@ -175,7 +189,7 @@ const MyDrawer = memo((props: Props) => {
             nextXpositive =
               vx == 0 || dx == 0
                 ? offset.x
-                : vx > 0.3 || dx > 100
+                : (vx > 0.2 || dx > 20)
                 ? panThreshold!
                 : 0;
             break;
@@ -183,7 +197,7 @@ const MyDrawer = memo((props: Props) => {
             nextXnegative =
               vx == 0 || dx == 0
                 ? offset.x
-                : vx < -0.3 || dx < -100
+                : (vx < -0.2 || dx < -20)
                 ? -panThreshold!
                 : 0;
             break;
@@ -191,7 +205,7 @@ const MyDrawer = memo((props: Props) => {
             nextYpositive =
               vy == 0 || dy == 0
                 ? offset.y
-                : vy > 0.3 || dy > 100
+                : (vy > 0.2 || dy > 20)
                 ? panThreshold!
                 : 0;
             break;
@@ -199,7 +213,7 @@ const MyDrawer = memo((props: Props) => {
             nextYnegative =
               vy == 0 || dy == 0
                 ? offset.y
-                : vy < -0.3 || dy < -100
+                : (vy < -0.2 || dy < -20)
                 ? -panThreshold!
                 : 0;
             break;
@@ -250,11 +264,14 @@ const MyDrawer = memo((props: Props) => {
           }
         });
       },
+      onPanResponderTerminate:(evt,gestureState)=>{
+        console.log('Terminate')
+      }
     });
   const maskPanResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => false,
+      // onStartShouldSetPanResponder: (evt, gestureState) => false,
+      // onMoveShouldSetPanResponder: (evt, gestureState) => false,
     })
   ).current;
   return (

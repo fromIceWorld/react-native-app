@@ -5,8 +5,8 @@ import { Pressable, View, Text, TouchableOpacity,StyleSheet } from "react-native
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import useDrawerStore from "../../Store/drawerState";
 import UserAvatar from "@/components/user/UserAvatar";
+
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -30,9 +30,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "One",
+          title: "广场",
           headerStyle:{shadowOffset:{width:0,height:0}},
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} /> ,
           headerLeft: () => (
             <TouchableOpacity style={{paddingLeft:10}} >
               {<UserAvatar></UserAvatar>}
@@ -43,8 +43,29 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "星球",
+          tabBarIcon: ({ color }) => <TabBarIcon name="globe" color={color} />,
+          headerLeft: () => (
+            <Link href="/modal" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="info-circle"
+                    size={25}
+                    color={Colors[colorScheme ?? "light"].text}
+                    style={{ marginLeft: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="headphones"
+        options={{
+          title: "空间",
+          tabBarIcon: ({ color }) => <TabBarIcon name="headphones" color={color} />,
           headerLeft: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -64,23 +85,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="three"
         options={{
-          title: "Tab 3",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "信息",
+          tabBarIcon: ({ color }) => <TabBarIcon name="comments-o" color={color} />,
         }}
       />
       <Tabs.Screen
         name="four"
         options={{
-          title: "Tab 4",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "个人",
+          tabBarIcon: ({ color }) => <TabBarIcon name="street-view" color={color} />,
         }}
       />
     </Tabs>
   );
 }
-
-const style = StyleSheet.create({
-  one:{
-    borderBottomColor:'red',
-  }
-})

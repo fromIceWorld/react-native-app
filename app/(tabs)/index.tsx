@@ -1,32 +1,9 @@
-import { StyleSheet, PanResponder } from "react-native";
-import { useState } from "react";
-import EditScreenInfo from "@/components/EditScreenInfo";
-import { Text, View } from "@/components/Themed";
-import useDrawerStore from "../../Store/drawerState";
+import { StyleSheet,View,ScrollView,Text} from "react-native";
+import PersonalEvent from "@/components/PersonalEvent/PersonalEvent";
 import TabView from "@/components/tabView";
+import Square from '@/components/square/Square'
 
 export default function TabOneScreen() {
-  return (
-    <>
-      <TabView></TabView>
-    </>
-  );
+  return <Square></Square>;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    paddingTop: 260,
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});

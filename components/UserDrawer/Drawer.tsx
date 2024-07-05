@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
-import { Link } from "expo-router";
 
 import UserAvatar from "../user/UserAvatar";
 
