@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, PanResponder, Animated } from "react-native";
 import { useState, useRef } from "react";
+import MyDrawer from "./MyDrawer/MyDrawer";
 
 interface TabProp{
   label:string,
@@ -12,7 +13,6 @@ interface TabsProp{
 const TabView = (prop:TabsProp) => {
   const tabCount = useRef(prop.tabs.length)
   const [tabIndex, setTabIndex] = useState(0);
-  const [releasePan, setPanReleasse] = useState(false);
   const viewWidth = useRef(0);
   const handleLayout = (event: any) => {
     console.log(event.nativeEvent.layout.width);
@@ -52,31 +52,34 @@ const TabView = (prop:TabsProp) => {
   );
 
   const _panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: (evt, gestureState) => false,
-    onMoveShouldSetPanResponder: (evt, gestureState) => true,
+    onStartShouldSetPanResponder: (evt, gestureState) => true,
+    onMoveShouldSetPanResponder: (evt, gestureState) => TabView.canTabViewRespond,
     onPanResponderReject: (evt, gestureState) => {
 
-      console.log('drawer reject')
+      console.log('tabView reject')
     },
-    onPanResponderTerminationRequest: (evt, gestureState) => {
-      return releasePan;
-    },
+    onPanResponderTerminationRequest: (evt, gestureState) => !TabView.canTabViewRespond,
     onPanResponderGrant: (evt, gestureState) => {
-      console.log('tabview grant')
+        TabView.canTabViewRespond = true;
+        MyDrawer.canDrawerRespond = false;
     },
     onPanResponderMove: (evt, gestureState) => {
-      console.log('drawer onMove')
+      console.log('tabview onMove')
 
       const { dx,dy, vx } = gestureState;
       // 当在边界滑动时，交出控制权
-      if((tabIndex == 0 && dx >= 0 || tabIndex == tabCount.current-1 && dx <=0) && Math.abs(dx) >= Math.abs(dy))
+      if((tabIndex == 0 && dx > 0 || tabIndex == tabCount.current-1 && dx < 0) && Math.abs(dx) > Math.abs(dy))
       {
-        setPanReleasse(true);
+        MyDrawer.canDrawerRespond = true;
+        TabView.canTabViewRespond = false;
         return 
+      }else{
+        TabView.canTabViewRespond = true;
       }
-      // // tabView是左右切换的状态。当向上下滑动时，忽略切换
-      if (Math.abs(dy) >= Math.abs(dx) ) {
-        return;
+      if(tabIndex == 0 && Math.abs(dx) > Math.abs(dy)){
+        MyDrawer.canDrawerRespond = true
+      }else{
+        MyDrawer.canDrawerRespond = false
       }
       barEvent({
         dx:
@@ -86,6 +89,7 @@ const TabView = (prop:TabsProp) => {
       });
       panEvent({ dx: tabIndex * viewWidth.current * -1 + dx, dy: 0 });
     },
+
     onPanResponderTerminate: (evt, gestureState) => {
       // 动画被打断后，需要复位
       const { dx, dy, vx } = gestureState;
@@ -114,7 +118,7 @@ const TabView = (prop:TabsProp) => {
         bounciness: 3,
         useNativeDriver: true,
       }).start();
-      setPanReleasse(false);
+      TabView.canTabViewRespond = true
     },
     onPanResponderRelease: (evt, gestureState) => {
       console.log('drawer release')
@@ -186,6 +190,7 @@ const TabView = (prop:TabsProp) => {
     </>
   );
 };
+TabView.canTabViewRespond = false
 const Style = StyleSheet.create({
   tabHeader: {
     display: "flex",

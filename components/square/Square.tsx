@@ -2,6 +2,7 @@ import { StyleSheet,View,ScrollView,Text,PanResponder,Animated,FlatList,SafeArea
 import PersonalEvent from "@/components/PersonalEvent/PersonalEvent";
 import TabView from "@/components/tabView";
 import { useState,useRef } from "react";
+import MyDrawer from "../MyDrawer/MyDrawer";
 
 const Style = StyleSheet.create({
     container:{
@@ -25,14 +26,28 @@ const Style = StyleSheet.create({
 const Square = ()=>{
   const [Messages,setMessages] = useState(new Array(30).fill(0).map(()=>({id:Math.random()+''})))
   const [isRefresh,setIsRefresh] = useState(false);
+ 
   const viewItemPan =PanResponder.create({
-    onStartShouldSetPanResponder:()=>true,
+    onStartShouldSetPanResponder:()=>false,
     onMoveShouldSetPanResponder:(evet,gestureState)=>true,
+    onPanResponderGrant:(evt,gesture)=>{
+      TabView.canTabViewRespond = false;
+        MyDrawer.canDrawerRespond = false;
+     
+    },
     onPanResponderMove:(evt,gesture)=>{
+      const {dx,dy} = gesture;
+      if(Math.abs(dy) >= Math.abs(dx)){
+        TabView.canTabViewRespond = false;
+        MyDrawer.canDrawerRespond = false;
+      }else{
+         TabView.canTabViewRespond = true;
+        MyDrawer.canDrawerRespond = true;
+      }
     },
     onPanResponderTerminationRequest:(evt,gesture)=>{
       const {dx,dy} = gesture;
-      return Math.abs(dx) >Math.abs(dy)
+      return false
     },
 })
   function onRefresh(){
@@ -45,18 +60,28 @@ const Square = ()=>{
   }
   function onEndReached(){
     setTimeout(()=>{
-      setMessages((state)=>([...state]).concat(new Array(10).fill(0).map(()=>({id:Math.random()+''}))))
+      setMessages((state)=>([...state]).concat(new Array(100).fill(0).map(()=>({id:Math.random()+''}))))
     },2000)
+  }
+  function onScroll(){
+    // TabView.canTabViewRespond = false;
+    // MyDrawer.canDrawerRespond = false;
+  }
+  function onScrollEndDrag(){
+    // TabView.canTabViewRespond = true;
+    // MyDrawer.canDrawerRespond = true;
+
   }
   const tabs = [
     {
       label:'广场',
-      component: <SafeAreaView style={Style['container']} >
+      component: <SafeAreaView style={Style['container']}>
                     <FlatList
                           onStartShouldSetResponder= {()=>false}
                           onMoveShouldSetResponder= {()=>false}
                           nestedScrollEnabled 
-                          onScroll={(e)=>e.stopPropagation()}
+                          onScroll={onScroll}
+                          onScrollEndDrag={onScrollEndDrag}
                           onRefresh={onRefresh}
                           refreshing={isRefresh}
                           onEndReached={onEndReached}

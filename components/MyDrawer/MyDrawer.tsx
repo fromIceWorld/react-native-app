@@ -63,7 +63,9 @@ let defaultProps: Props = {
   panThreshold: Dimensions.get("window").width - 50,
 };
 
-const MyDrawer = memo((props: Props) => {
+let canDrawerRespond = true
+
+const MyDrawer = (props: Props) => {
   let config = useRef({ ...defaultProps, ...props }).current,
     { open, type, side, panThreshold, content, onClose, onOpen } = config;
   const maskRef = useRef(null);
@@ -116,17 +118,9 @@ const MyDrawer = memo((props: Props) => {
     maskEvent(panThreshold);
   }
   const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        console.log('start')
-        return false
-      },
-      onMoveShouldSetPanResponderCapture:()=>false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // @ts-ignore
-        console.log('drawer should move')
-
-        return true
-      },
+      onStartShouldSetPanResponder: (evt, gestureState) => false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => MyDrawer.canDrawerRespond,
+      onPanResponderTerminationRequest:()=> !MyDrawer.canDrawerRespond,
       onPanResponderGrant: (evt, gestureState) => {
         console.log('drawer grant')
       },
@@ -134,7 +128,7 @@ const MyDrawer = memo((props: Props) => {
         console.log('drawer reject')
       },
       onPanResponderMove: (evt, gestureState) => {
-        console.log('drawer onMove')
+        console.log('drawer onMove',!MyDrawer.canDrawerRespond)
         let { dx, dy } = gestureState;
         // 左右拉动时，阻止上下动
         if (["left", "right"].includes(side!)) {
@@ -294,10 +288,10 @@ const MyDrawer = memo((props: Props) => {
           zIndex: onTouch ? 10 : 0,
         }}
       ></Animated.View>
-      <View style={mainStyle}>{props.children}</View>
+      <Animated.View  style={mainStyle}>{props.children}</Animated.View>
     </Animated.View>
   );
-});
+};
 
 // 将输入的 平移阈值，转化为真实平移
 function tansformPanThreshold(
@@ -389,4 +383,5 @@ function mapMask(side: Side, dx: number, dy: number, panThreshold: number,isOpen
   }
  
 }
+MyDrawer.canDrawerRespond  = false
 export default MyDrawer;
