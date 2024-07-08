@@ -1,64 +1,64 @@
 import { Text, View } from "@/components/Themed";
 import MessageItem from "@/components/chart/MessageItem";
-import{FlatList,StyleSheet,PanResponder,Animated,Pressable} from'react-native'
+import {
+  FlatList,
+  StyleSheet,
+  PanResponder,
+  Animated,
+  Pressable,
+} from "react-native";
 import MyDrawer from "@/components/MyDrawer/MyDrawer";
-import { router,Link } from 'expo-router';
+import { router, Link } from "expo-router";
 
 const Style = StyleSheet.create({
-  container:{
-    flex:1
-  }
-})
+  container: {
+    flex: 1,
+  },
+});
 
-const messages = new Array(100).fill(0).map((item,index)=>({id:index}))
+const messages = new Array(100).fill(0).map((item, index) => ({ id: index }));
 
 const _pan = PanResponder.create({
-  onStartShouldSetPanResponder:()=>true,
-  onMoveShouldSetPanResponder:()=>true,
-  onPanResponderTerminationRequest:(evt,gesture)=>false,
-})
-
-
+  onStartShouldSetPanResponder: () => true,
+  onMoveShouldSetPanResponder: () => true,
+  onPanResponderTerminationRequest: (evt, gesture) => false,
+});
 
 const Three = () => {
   const ContainerPan = PanResponder.create({
-    onStartShouldSetPanResponder:()=>true,
-    onMoveShouldSetPanResponder:()=>true,
-    onPanResponderTerminationRequest:()=>false
-  })
-  function onScroll(){
-    console.log('onScroll',)
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderTerminationRequest: () => false,
+  });
+  function onScroll() {
+    console.log("onScroll");
   }
-  function onScrollEndDrag(){
-    setTimeout(()=>{
-      console.log('onScrollEndDrag')
-    })
+  function onScrollEndDrag() {
+    setTimeout(() => {
+      console.log("onScrollEndDrag");
+    });
     // MyDrawer.canDrawerRespond = true
   }
-  function chartWithany(){
-    console.log('go')
-    router.replace('/message/12');
+  function chartWithany() {
+    console.log("go");
+    router.replace("/message/1243");
   }
   return (
-   <>
-   <Animated.View style={Style['container']} {...ContainerPan.panHandlers}>
-            <FlatList data={messages}
-                onViewableItemsChanged={onScroll}
-                onScrollEndDrag={onScrollEndDrag}
-                onPointerDown={chartWithany}
-                renderItem={({item}) =>
-                  <View   {..._pan.panHandlers} key={item.id}>
-                      <MessageItem ></MessageItem>
-                  </View>
-                  
-                }
-                
-
-              >
-
-            </FlatList>
-    </Animated.View>
-   </>
+    <>
+      <Animated.View style={Style["container"]} {...ContainerPan.panHandlers}>
+        <FlatList
+          data={messages}
+          onViewableItemsChanged={onScroll}
+          onScrollEndDrag={onScrollEndDrag}
+          onPointerDown={chartWithany}
+          renderItem={({ item }) => (
+            <View {..._pan.panHandlers} key={item.id}>
+              <MessageItem></MessageItem>
+            </View>
+          )}
+        ></FlatList>
+      </Animated.View>
+    </>
   );
 };
 export default Three;

@@ -12,7 +12,7 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/components/useColorScheme";
 import useDrawerStore from "@/Store/drawerState";
 import UserDrawer from "@/components/UserDrawer/Drawer";
-import MyDrawer from '@/components/MyDrawer/MyDrawer'
+import MyDrawer from "@/components/MyDrawer/MyDrawer";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -53,16 +53,20 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const setOpen = useDrawerStore((state: any) => state.setOpen);
   const colorScheme = useColorScheme();
-  
-  function onDrawerOpen(){
-    setOpen(true)
+
+  function onDrawerOpen() {
+    setOpen(true);
   }
-  function onDrawerClose(){
-    setOpen(false)
+  function onDrawerClose() {
+    setOpen(false);
   }
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <MyDrawer  content = {<UserDrawer></UserDrawer>} onOpen={onDrawerOpen} onClose={onDrawerClose}>
+      <MyDrawer
+        content={<UserDrawer></UserDrawer>}
+        onOpen={onDrawerOpen}
+        onClose={onDrawerClose}
+      >
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
@@ -95,9 +99,9 @@ const drawerStyles = {
     paddingTop: 50,
     paddingLeft: 5,
   },
-  main: { 
-    paddingLeft: 0, 
-    padding: 30,   
+  main: {
+    paddingLeft: 0,
+    padding: 30,
     backgroudColor: "red",
-},
+  },
 };
