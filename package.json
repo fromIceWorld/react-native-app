@@ -37,7 +37,8 @@
     "zustand": "^4.5.2",
     "react-native-gesture-handler": "~2.16.1",
     "expo-camera": "~15.0.12",
-    "react-native-maps": "1.14.0"
+    "react-native-maps": "1.14.0",
+    "expo-haptics": "~13.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

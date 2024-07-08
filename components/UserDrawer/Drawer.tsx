@@ -10,6 +10,7 @@ import {
 import { Text, View } from "@/components/Themed";
 
 import UserAvatar from "../user/UserAvatar";
+import * as Haptics from 'expo-haptics';
 
 const Menus = [
   {
@@ -68,7 +69,7 @@ const UserDrawer = () => {
           ))}
         </View>
       </ScrollView>
-      <TouchableOpacity style={UserStyles["themeChange"]}>
+      <TouchableOpacity style={UserStyles["themeChange"]} onPress={()=>Haptics.selectionAsync()}>
         <Feather name="sun" size={24} color="black" />
       </TouchableOpacity>
     </View>

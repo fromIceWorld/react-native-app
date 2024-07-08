@@ -1,8 +1,9 @@
 import { Text, View } from "@/components/Themed";
-import { Link } from "expo-router";
 import MessageItem from "@/components/chart/MessageItem";
-import{FlatList,StyleSheet,PanResponder,Animated} from'react-native'
+import{FlatList,StyleSheet,PanResponder,Animated,Pressable} from'react-native'
 import MyDrawer from "@/components/MyDrawer/MyDrawer";
+import { router,Link } from 'expo-router';
+
 const Style = StyleSheet.create({
   container:{
     flex:1
@@ -17,38 +18,47 @@ const _pan = PanResponder.create({
   onPanResponderTerminationRequest:(evt,gesture)=>false,
 })
 
+
+
 const Three = () => {
   const ContainerPan = PanResponder.create({
-    onStartShouldSetPanResponder:()=>false,
-    onMoveShouldSetPanResponder:()=>false,
-    onPanResponderMove:()=>{
-      
-    }
+    onStartShouldSetPanResponder:()=>true,
+    onMoveShouldSetPanResponder:()=>true,
+    onPanResponderTerminationRequest:()=>false
   })
   function onScroll(){
-    MyDrawer.canDrawerRespond = false
-    console.log('onScroll',MyDrawer.canDrawerRespond)
+    console.log('onScroll',)
   }
   function onScrollEndDrag(){
     setTimeout(()=>{
-      MyDrawer.canDrawerRespond = true
-      console.log('onScrollEndDrag',MyDrawer.canDrawerRespond)
+      console.log('onScrollEndDrag')
     })
     // MyDrawer.canDrawerRespond = true
   }
+  function chartWithany(){
+    console.log('go')
+    router.replace('/message/12');
+  }
   return (
-    <Animated.View style={Style['container']} {...ContainerPan.panHandlers}>
+   <>
+   <Animated.View style={Style['container']} {...ContainerPan.panHandlers}>
             <FlatList data={messages}
                 onViewableItemsChanged={onScroll}
                 onScrollEndDrag={onScrollEndDrag}
-                renderItem={({item}) => <Animated.View  {..._pan.panHandlers} key={item.id}>
-                  <MessageItem ></MessageItem>
-                </Animated.View>}
+                onPointerDown={chartWithany}
+                renderItem={({item}) =>
+                  <View   {..._pan.panHandlers} key={item.id}>
+                      <MessageItem ></MessageItem>
+                  </View>
+                  
+                }
+                
 
-      >
+              >
 
-     </FlatList>
+            </FlatList>
     </Animated.View>
+   </>
   );
 };
 export default Three;

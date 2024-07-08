@@ -1,23 +1,27 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Pressable, View, Text, TouchableOpacity,StyleSheet } from "react-native";
+import { Pressable, View, Text, TouchableOpacity,StyleSheet,TouchableWithoutFeedback,PanResponder } from "react-native";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import UserAvatar from "@/components/user/UserAvatar";
+import * as Haptics from 'expo-haptics';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
   color: string;
+  onPress?:()=>void
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={28}  style={{ marginBottom: -3 }} {...props} />;
 }
-
+function pressHaptics(){
+  Haptics.selectionAsync()
+}
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
+  
   return (
     <Tabs
       screenOptions={{
@@ -32,9 +36,9 @@ export default function TabLayout() {
         options={{
           title: "广场",
           headerStyle:{shadowOffset:{width:0,height:0}},
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} /> ,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home"  color={color} />,
           headerLeft: () => (
-            <TouchableOpacity style={{paddingLeft:10}} >
+            <TouchableOpacity style={{paddingLeft:10}}>
               {<UserAvatar></UserAvatar>}
             </TouchableOpacity>
           ),

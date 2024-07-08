@@ -7,11 +7,12 @@ import {
   Dimensions,
   Animated,
   TouchableHighlight,
-  LogBox,
+  LogBox,Vibration
 } from "react-native";
+import * as Haptics from 'expo-haptics';
 
 LogBox.ignoreLogs([]);
-
+const HapticsOpenChange = ()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
 const style = StyleSheet.create({
   container: {
     position: "relative",
@@ -118,17 +119,21 @@ const MyDrawer = (props: Props) => {
     maskEvent(panThreshold);
   }
   const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => MyDrawer.canDrawerRespond,
-      onPanResponderTerminationRequest:()=> !MyDrawer.canDrawerRespond,
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        canDrawerRespond = true;
+        return false
+      },
+      onMoveShouldSetPanResponder: (evt, gestureState) => canDrawerRespond,
+      onPanResponderTerminationRequest:()=> !canDrawerRespond,
       onPanResponderGrant: (evt, gestureState) => {
+        canDrawerRespond = true
         console.log('drawer grant')
       },
       onPanResponderReject: (evt, gestureState) => {
         console.log('drawer reject')
       },
       onPanResponderMove: (evt, gestureState) => {
-        console.log('drawer onMove',!MyDrawer.canDrawerRespond)
+        console.log('drawer onMove',)
         let { dx, dy } = gestureState;
         // 左右拉动时，阻止上下动
         if (["left", "right"].includes(side!)) {
@@ -213,7 +218,7 @@ const MyDrawer = (props: Props) => {
             break;
         }
         console.log(nextXpositive, nextXnegative, nextYpositive, nextYnegative);
-
+        Vibration.vibrate(5000)
         if (
           nextXpositive + nextXnegative + nextYpositive + nextYnegative ==
           0
@@ -222,7 +227,11 @@ const MyDrawer = (props: Props) => {
           Animated.spring(
             mask, // Auto-multiplexed
             { toValue: 0, speed: 28, bounciness: 1, useNativeDriver: true } // Back to zero
-          ).start();
+          ).start(()=>{
+            // if(isOpen){
+            //   HapticsOpenChange()
+            // }
+          });
         } else {
           onOpen!();
           Animated.spring(
@@ -233,7 +242,12 @@ const MyDrawer = (props: Props) => {
               bounciness: 1,
               useNativeDriver: true,
             } // Back to zero
-          ).start();
+          ).start(()=>{
+            if(!isOpen){
+              HapticsOpenChange()
+            }
+          });
+          
         }
         mask.flattenOffset()
         offset.x = nextXpositive || nextXnegative;
@@ -383,5 +397,4 @@ function mapMask(side: Side, dx: number, dy: number, panThreshold: number,isOpen
   }
  
 }
-MyDrawer.canDrawerRespond  = false
 export default MyDrawer;

@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, PanResponder, Animated } from "react-native";
 import { useState, useRef } from "react";
 import MyDrawer from "./MyDrawer/MyDrawer";
+import { Diriction, getDirectionByCoord } from "@/utils/panDirection";
 
 interface TabProp{
   label:string,
@@ -9,6 +10,9 @@ interface TabProp{
 interface TabsProp{
   tabs:TabProp[]
 }
+
+let canTabViewRespond = true
+
 
 const TabView = (prop:TabsProp) => {
   const tabCount = useRef(prop.tabs.length)
@@ -51,43 +55,46 @@ const TabView = (prop:TabsProp) => {
     }
   );
 
-  const _panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: (evt, gestureState) => true,
-    onMoveShouldSetPanResponder: (evt, gestureState) => TabView.canTabViewRespond,
-    onPanResponderReject: (evt, gestureState) => {
 
-      console.log('tabView reject')
+  const _panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: (evt, gestureState) => {
+      canTabViewRespond = true
+      return true
     },
-    onPanResponderTerminationRequest: (evt, gestureState) => !TabView.canTabViewRespond,
+    onMoveShouldSetPanResponder: (evt, gestureState) => canTabViewRespond,
+    onPanResponderTerminationRequest: (evt, gestureState) => !canTabViewRespond,
     onPanResponderGrant: (evt, gestureState) => {
-        TabView.canTabViewRespond = true;
-        MyDrawer.canDrawerRespond = false;
+      // canTabViewRespond = true
     },
     onPanResponderMove: (evt, gestureState) => {
-      console.log('tabview onMove')
 
       const { dx,dy, vx } = gestureState;
+      console.log('tabview onMove',dx,dy, )
+      const direction = getDirectionByCoord({x:dx,y:dy});
       // 当在边界滑动时，交出控制权
-      if((tabIndex == 0 && dx > 0 || tabIndex == tabCount.current-1 && dx < 0) && Math.abs(dx) > Math.abs(dy))
-      {
-        MyDrawer.canDrawerRespond = true;
-        TabView.canTabViewRespond = false;
-        return 
+      let barTargetDX = 0;
+      if((tabIndex == 0 && direction == Diriction.right) || (tabIndex == tabCount.current-1 && direction == Diriction.left)){
+        canTabViewRespond = false
+        barTargetDX = 0;
+        return
       }else{
-        TabView.canTabViewRespond = true;
+        barTargetDX =  Math.max((tabIndex * viewWidth.current + dx * -1) / tabCount.current +
+        viewWidth.current / (tabCount.current*2) -30,viewWidth.current / (tabCount.current*2) - 30)
       }
-      if(tabIndex == 0 && Math.abs(dx) > Math.abs(dy)){
-        MyDrawer.canDrawerRespond = true
+      let panTargetDX = 0
+      if(tabIndex == 0 && dx >=0){
+        panTargetDX = 0
+      }else if((tabIndex == tabCount.current-1) && dx <=0){
+        panTargetDX = tabIndex * viewWidth.current * -1 
       }else{
-        MyDrawer.canDrawerRespond = false
+        panTargetDX = tabIndex * viewWidth.current * -1 + dx
       }
+      console.log('barTargetDX',barTargetDX)
       barEvent({
-        dx:
-          (tabIndex * viewWidth.current + dx * -1) / tabCount.current +
-          viewWidth.current / (tabCount.current*2) -30,
+        dx: barTargetDX,
         dy: 0,
       });
-      panEvent({ dx: tabIndex * viewWidth.current * -1 + dx, dy: 0 });
+      panEvent({ dx: panTargetDX, dy: 0 });
     },
 
     onPanResponderTerminate: (evt, gestureState) => {
@@ -118,10 +125,10 @@ const TabView = (prop:TabsProp) => {
         bounciness: 3,
         useNativeDriver: true,
       }).start();
-      TabView.canTabViewRespond = true
+      canTabViewRespond = true
     },
     onPanResponderRelease: (evt, gestureState) => {
-      console.log('drawer release')
+      console.log('tabView release')
 
       const { dx, dy, vx } = gestureState;
       let sign = -Math.sign(dx);
@@ -150,6 +157,10 @@ const TabView = (prop:TabsProp) => {
         useNativeDriver: true,
       }).start();
     },
+    onPanResponderReject:()=>{
+      canTabViewRespond = true
+
+    }
   });
   return (
     <>
@@ -190,7 +201,6 @@ const TabView = (prop:TabsProp) => {
     </>
   );
 };
-TabView.canTabViewRespond = false
 const Style = StyleSheet.create({
   tabHeader: {
     display: "flex",

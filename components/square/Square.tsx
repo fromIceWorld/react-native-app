@@ -3,6 +3,7 @@ import PersonalEvent from "@/components/PersonalEvent/PersonalEvent";
 import TabView from "@/components/tabView";
 import { useState,useRef } from "react";
 import MyDrawer from "../MyDrawer/MyDrawer";
+import { Diriction, getDirectionByCoord } from "@/utils/panDirection";
 
 const Style = StyleSheet.create({
     container:{
@@ -21,34 +22,38 @@ const Style = StyleSheet.create({
   
 
 
-  
+  let flastCanRespond = true;
 
 const Square = ()=>{
   const [Messages,setMessages] = useState(new Array(30).fill(0).map(()=>({id:Math.random()+''})))
   const [isRefresh,setIsRefresh] = useState(false);
- 
+
   const viewItemPan =PanResponder.create({
-    onStartShouldSetPanResponder:()=>false,
-    onMoveShouldSetPanResponder:(evet,gestureState)=>true,
+    onStartShouldSetPanResponder:()=>{
+      flastCanRespond = true
+      return true
+    },
+    onMoveShouldSetPanResponder:(evet,gestureState)=>flastCanRespond,
+    onPanResponderTerminationRequest:()=>!flastCanRespond,
     onPanResponderGrant:(evt,gesture)=>{
-      TabView.canTabViewRespond = false;
-        MyDrawer.canDrawerRespond = false;
-     
+      const {dx,dy} = gesture;
+      flastCanRespond = true
     },
     onPanResponderMove:(evt,gesture)=>{
       const {dx,dy} = gesture;
-      if(Math.abs(dy) >= Math.abs(dx)){
-        TabView.canTabViewRespond = false;
-        MyDrawer.canDrawerRespond = false;
+      const direction = getDirectionByCoord({x:dx,y:dy})
+      console.log('square move',dx,dy,direction)
+      if(direction == Diriction.up || direction == Diriction.bottom){
+        flastCanRespond = true;
       }else{
-         TabView.canTabViewRespond = true;
-        MyDrawer.canDrawerRespond = true;
+        // console.log('移交控制权','TabView.canTabViewRespond',Math.abs(dy),Math.abs(dx))
+        flastCanRespond = false;
       }
     },
-    onPanResponderTerminationRequest:(evt,gesture)=>{
-      const {dx,dy} = gesture;
-      return false
-    },
+    onPanResponderTerminate:()=>{
+      flastCanRespond = true;
+    }
+   
 })
   function onRefresh(){
     setIsRefresh(true)
@@ -56,7 +61,7 @@ const Square = ()=>{
     setTimeout(()=>{
       setIsRefresh(false);
       console.log('finish Refresh');
-    },2000)
+    },1000)
   }
   function onEndReached(){
     setTimeout(()=>{
@@ -77,9 +82,6 @@ const Square = ()=>{
       label:'广场',
       component: <SafeAreaView style={Style['container']}>
                     <FlatList
-                          onStartShouldSetResponder= {()=>false}
-                          onMoveShouldSetResponder= {()=>false}
-                          nestedScrollEnabled 
                           onScroll={onScroll}
                           onScrollEndDrag={onScrollEndDrag}
                           onRefresh={onRefresh}
@@ -88,7 +90,7 @@ const Square = ()=>{
                           onEndReachedThreshold={2}
                           data={Messages}
                           renderItem={({item}) => <Animated.View style={Style['messageCard']} 
-                          {...viewItemPan.panHandlers}
+                         {...viewItemPan.panHandlers}
                                                   >
                                                       <PersonalEvent ></PersonalEvent>
                                                   </Animated.View>}
