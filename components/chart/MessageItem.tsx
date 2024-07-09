@@ -48,6 +48,7 @@ function chartWithany() {
   });
 }
 const MessageItem = () => {
+    
   return (
     <TouchableHighlight
       activeOpacity={0.6}
