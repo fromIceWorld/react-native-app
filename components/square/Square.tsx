@@ -31,28 +31,33 @@ const Square = ()=>{
 
   const viewItemPan =PanResponder.create({
     onStartShouldSetPanResponder:()=>{
+      console.log('touch scroll')
       flastCanRespond = true
-      return true
+      return flastCanRespond
     },
-    onMoveShouldSetPanResponder:(evet,gestureState)=>flastCanRespond,
+    onMoveShouldSetPanResponder:(evet,gestureState)=>{
+      console.log('scroll scroll')
+      flastCanRespond = true;
+      return flastCanRespond
+    },
     onPanResponderTerminationRequest:()=>!flastCanRespond,
-    onPanResponderGrant:(evt,gesture)=>{
-      const {dx,dy} = gesture;
-      flastCanRespond = true
-    },
+    
     onPanResponderMove:(evt,gesture)=>{
       const {dx,dy} = gesture;
-      const direction = getDirectionByCoord({x:dx,y:dy})
-      console.log('square move',dx,dy,direction)
-      if(direction == Diriction.up || direction == Diriction.bottom){
-        flastCanRespond = true;
+      const direction = getDirectionByCoord({x:dx,y:dy});
+      console.log(direction);
+      if([Diriction.bottom,Diriction.up].includes(direction)){
+        TabView.canTabViewRespond = false;
+        MyDrawer.canDrawerRespond = false;
+        flastCanRespond = true
       }else{
-        // console.log('移交控制权','TabView.canTabViewRespond',Math.abs(dy),Math.abs(dx))
-        flastCanRespond = false;
+        TabView.canTabViewRespond = true;
+        MyDrawer.canDrawerRespond = true;
+        flastCanRespond = false
       }
     },
     onPanResponderTerminate:()=>{
-      flastCanRespond = true;
+      console.log('teminal')
     }
    
 })
@@ -70,12 +75,14 @@ const Square = ()=>{
     },2000)
   }
   function onScroll(){
-    // TabView.canTabViewRespond = false;
-    // MyDrawer.canDrawerRespond = false;
+    TabView.canTabViewRespond = false;
+    MyDrawer.canDrawerRespond = false; 
+    flastCanRespond = false
   }
   function onScrollEndDrag(){
-    // TabView.canTabViewRespond = true;
-    // MyDrawer.canDrawerRespond = true;
+    TabView.canTabViewRespond = true;
+    MyDrawer.canDrawerRespond = true; 
+    flastCanRespond = true
 
   }
   const tabs = [

@@ -123,8 +123,8 @@ const MyDrawer = (props: Props) => {
   },[isOpen])
   
   const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponder: (evt, gestureState) => MyDrawer.canDrawerRespond,
+      onMoveShouldSetPanResponder: (evt, gestureState) => MyDrawer.canDrawerRespond,
       onPanResponderTerminationRequest:()=> !canDrawerRespond,
       onPanResponderMove: (evt, gestureState) => {
         let { dx, dy } = gestureState;
@@ -165,7 +165,7 @@ const MyDrawer = (props: Props) => {
         ) {
           return;
         }
-        
+
         setOnTouch(true);
         moveEvent(evt, { dx: dx + offset.x, dy: dy + offset.y });
         let p = mapMask(side!, dx, dy, panThreshold!,isOpen);
@@ -383,4 +383,5 @@ function mapMask(side: Side, dx: number, dy: number, panThreshold: number,isOpen
   }
  
 }
+MyDrawer.canDrawerRespond = false;
 export default MyDrawer;

@@ -11,7 +11,6 @@ interface TabsProp{
   tabs:TabProp[]
 }
 
-let canTabViewRespond = true
 
 
 const TabView = (prop:TabsProp) => {
@@ -57,12 +56,9 @@ const TabView = (prop:TabsProp) => {
 
 
   const _panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: (evt, gestureState) => {
-      canTabViewRespond = true
-      return true
-    },
-    onMoveShouldSetPanResponder: (evt, gestureState) => canTabViewRespond,
-    onPanResponderTerminationRequest: (evt, gestureState) => !canTabViewRespond,
+    onStartShouldSetPanResponder: (evt, gestureState) => TabView.canTabViewRespond,
+    onMoveShouldSetPanResponder: (evt, gestureState) => TabView.canTabViewRespond,
+    onPanResponderTerminationRequest: (evt, gestureState) => !TabView.canTabViewRespond,
     onPanResponderGrant: (evt, gestureState) => {
       // canTabViewRespond = true
     },
@@ -74,7 +70,7 @@ const TabView = (prop:TabsProp) => {
       // 当在边界滑动时，交出控制权
       let barTargetDX = 0;
       if((tabIndex == 0 && direction == Diriction.right) || (tabIndex == tabCount.current-1 && direction == Diriction.left)){
-        canTabViewRespond = false
+        TabView.canTabViewRespond = false
         barTargetDX = 0;
         return
       }else{
@@ -89,7 +85,6 @@ const TabView = (prop:TabsProp) => {
       }else{
         panTargetDX = tabIndex * viewWidth.current * -1 + dx
       }
-      console.log('barTargetDX',barTargetDX)
       barEvent({
         dx: barTargetDX,
         dy: 0,
@@ -125,7 +120,7 @@ const TabView = (prop:TabsProp) => {
         bounciness: 3,
         useNativeDriver: true,
       }).start();
-      canTabViewRespond = true
+      TabView.canTabViewRespond = true
     },
     onPanResponderRelease: (evt, gestureState) => {
       console.log('tabView release')
@@ -158,7 +153,7 @@ const TabView = (prop:TabsProp) => {
       }).start();
     },
     onPanResponderReject:()=>{
-      canTabViewRespond = true
+      TabView.canTabViewRespond = true
 
     }
   });
@@ -239,5 +234,5 @@ const Style = StyleSheet.create({
   },
 });
 
-
+TabView.canTabViewRespond = false
 export default TabView;
