@@ -28,17 +28,6 @@ const _pan = PanResponder.create({
 });
 
 const Three = () => {
-  const ContainerPan = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: (evt) => {
-      console.log(evt.nativeEvent.target)
-      return true
-    },
-    onPanResponderTerminationRequest: () => false,
-    onPanResponderMove:(evt,gesture)=>{
-      console.log('move')
-    }
-  });
   function onScroll() {
     console.log("onScroll");
   }
@@ -54,7 +43,7 @@ const Three = () => {
   }
   return (
     <>
-      <Animated.View style={Style["container"]} {...ContainerPan.panHandlers}>
+      <Animated.View style={Style["container"]}>
         <FlatList
           data={messages}
           onStartShouldSetResponder={()=>true}

@@ -6,7 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity,Appearance
+  TouchableOpacity,Appearance,PanResponder
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import type {
@@ -15,7 +15,9 @@ import type {
   // @ts-ignore
 } from 'react-native/Libraries/Utilities/NativeAppearance';
 import UserAvatar from "../user/UserAvatar";
+import MyDrawer from "../MyDrawer/MyDrawer";
 import * as Haptics from 'expo-haptics';
+import { getDirectionByCoord ,Diriction} from "@/utils/panDirection";
 
 const Menus = [
   {
@@ -38,9 +40,11 @@ const Menus = [
   },
 ];
 
+let releasePanRespond = true
 
 const UserDrawer = () => {
   const [nativeColorScheme, setNativeColorScheme] = useState<ColorSchemeName | null>(null);
+  
   useEffect(() => {
     Appearance.setColorScheme(nativeColorScheme);
   }, [nativeColorScheme]);
@@ -48,8 +52,24 @@ const UserDrawer = () => {
     Haptics.selectionAsync();
     setNativeColorScheme(nativeColorScheme == 'dark' ? 'light' : 'dark');
   } 
+  const listPan = PanResponder.create({
+    onStartShouldSetPanResponder:()=>releasePanRespond,
+    onMoveShouldSetPanResponder:()=>releasePanRespond,
+    onPanResponderTerminationRequest:()=>!releasePanRespond,
+    onPanResponderMove:(evt,gesture)=>{
+      const {dx,dy} = gesture;
+      const direction = getDirectionByCoord({x:dx,y:dy});
+      if(direction == Diriction.left && dx < -20){
+        releasePanRespond = false
+      }
+    },
+    onPanResponderTerminate:()=>{
+      releasePanRespond = true
+    }
+  })
+ 
   return (
-    <View style={UserStyles["container"]}>
+    <View style={UserStyles["container"]}  {...listPan.panHandlers}>
       <TouchableOpacity>
         <UserAvatar></UserAvatar>
       </TouchableOpacity>

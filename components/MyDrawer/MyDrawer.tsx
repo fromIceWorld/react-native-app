@@ -180,16 +180,12 @@ const MyDrawer = (props: Props) => {
           nextYnegative = 0;
         switch (side) {
           case "left":
-            nextXpositive =
-              vx == 0 || dx == 0
-                ? offset.x
-                : (vx > 0.2 || dx > 20)
-                ? panThreshold!
-                : 0;
+            nextXpositive = offset.x == 0 ? ( dx > 20 || vx > 0.2) ? panThreshold! : 0 
+                                          : ( dx < -20 || vx < -0.2) ? 0 : panThreshold!;
             break;
           case "right":
             nextXnegative =
-              vx == 0 || dx == 0
+              vx == 0 || dx <=20
                 ? offset.x
                 : (vx < -0.2 || dx < -20)
                 ? -panThreshold!
@@ -197,7 +193,7 @@ const MyDrawer = (props: Props) => {
             break;
           case "top":
             nextYpositive =
-              vy == 0 || dy == 0
+              vy == 0 || dy >=20
                 ? offset.y
                 : (vy > 0.2 || dy > 20)
                 ? panThreshold!
@@ -205,7 +201,7 @@ const MyDrawer = (props: Props) => {
             break;
           case "bottom":
             nextYnegative =
-              vy == 0 || dy == 0
+              vy == 0 || dy >=-20
                 ? offset.y
                 : (vy < -0.2 || dy < -20)
                 ? -panThreshold!
