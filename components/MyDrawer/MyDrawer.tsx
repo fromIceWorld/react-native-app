@@ -172,7 +172,6 @@ const MyDrawer = (props: Props) => {
         maskEvent(p);
       },
       onPanResponderRelease: (evt, gestureState) => {
-        console.log('drawer release')
         const { dx, dy, vx, vy } = gestureState;
         let nextXpositive = 0,
           nextXnegative = 0,
@@ -208,7 +207,6 @@ const MyDrawer = (props: Props) => {
                 : 0;
             break;
         }
-        console.log(nextXpositive, nextXnegative, nextYpositive, nextYnegative);
         if (
           nextXpositive + nextXnegative + nextYpositive + nextYnegative ==
           0
@@ -263,7 +261,6 @@ const MyDrawer = (props: Props) => {
         });
       },
       onPanResponderTerminate:(evt,gestureState)=>{
-        console.log('Terminate')
       }
     });
   return (

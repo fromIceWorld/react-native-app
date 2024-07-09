@@ -5,6 +5,7 @@ import { useState,useRef } from "react";
 import MyDrawer from "../MyDrawer/MyDrawer";
 import { Text } from "../Themed";
 import { Diriction, getDirectionByCoord } from "@/utils/panDirection";
+import MyImage from '@/components/image/image'
 
 const Style = StyleSheet.create({
     container:{
@@ -17,10 +18,11 @@ const Style = StyleSheet.create({
       paddingTop:6,
       paddingBottom:8,
       overflow:'hidden'
-    }
+    },
+   
   });
   
-  
+ 
 
 
   let flastCanRespond = true;
@@ -31,12 +33,10 @@ const Square = ()=>{
 
   const viewItemPan =PanResponder.create({
     onStartShouldSetPanResponder:()=>{
-      console.log('touch scroll')
       flastCanRespond = true
       return flastCanRespond
     },
     onMoveShouldSetPanResponder:(evet,gestureState)=>{
-      console.log('scroll scroll')
       flastCanRespond = true;
       return flastCanRespond
     },
@@ -45,7 +45,6 @@ const Square = ()=>{
     onPanResponderMove:(evt,gesture)=>{
       const {dx,dy} = gesture;
       const direction = getDirectionByCoord({x:dx,y:dy});
-      console.log(direction);
       if([Diriction.bottom,Diriction.up].includes(direction)){
         TabView.canTabViewRespond = false;
         MyDrawer.canDrawerRespond = false;
@@ -57,16 +56,13 @@ const Square = ()=>{
       }
     },
     onPanResponderTerminate:()=>{
-      console.log('teminal')
     }
    
 })
   function onRefresh(){
     setIsRefresh(true)
-    console.log('onRefresh');
     setTimeout(()=>{
       setIsRefresh(false);
-      console.log('finish Refresh');
     },1000)
   }
   function onEndReached(){
@@ -109,7 +105,29 @@ const Square = ()=>{
     },
     {
       label:'关注',
-      component: <Text lightColor="red" darkColor="blue">关注</Text>
+      component: 
+      <>
+            <Text lightColor="red" darkColor="blue">关注</Text>
+           <MyImage></MyImage>
+        <SafeAreaView style={Style['container']}>
+                    <FlatList
+                          onScroll={onScroll}
+                          onScrollEndDrag={onScrollEndDrag}
+                          onRefresh={onRefresh}
+                          refreshing={isRefresh}
+                          onEndReached={onEndReached}
+                          onEndReachedThreshold={2}
+                          data={Messages}
+                          renderItem={({item}) => <Animated.View style={Style['messageCard']} 
+                         {...viewItemPan.panHandlers}
+                                                  >
+                                                      <PersonalEvent ></PersonalEvent>
+                                                  </Animated.View>}
+                          keyExtractor={item => item.id}
+                      />
+                        
+                </SafeAreaView>
+      </>
     },
   ]
  return <TabView tabs={tabs}></TabView>

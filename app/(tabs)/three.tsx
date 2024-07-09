@@ -29,16 +29,13 @@ const _pan = PanResponder.create({
 
 const Three = () => {
   function onScroll() {
-    console.log("onScroll");
   }
   function onScrollEndDrag() {
     setTimeout(() => {
-      console.log("onScrollEndDrag");
     });
     // MyDrawer.canDrawerRespond = true
   }
   function chartWithany() {
-    console.log("go");
     router.replace("/message/1243");
   }
   return (

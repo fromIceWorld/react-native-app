@@ -39,7 +39,6 @@ const Style = StyleSheet.create({
   },
 });
 function chartWithany() {
-  console.log("go");
   router.push({
     pathname: "/message/123",
     params: {

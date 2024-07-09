@@ -22,7 +22,6 @@ function getAngle(x:number,y:number){
 function getDirectionByCoord(coord:Coordinate):Diriction{
     const {x,y} = coord;
     const angle = getAngle(x,y);
-    console.log(x,y,angle)
     if(angle >= 30 && angle <= 150){
         return Diriction.up
     }else if(angle >= -150 && angle <= -30){

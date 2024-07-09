@@ -18,7 +18,6 @@ const TabView = (prop:TabsProp) => {
   const [tabIndex, setTabIndex] = useState(0);
   const viewWidth = useRef(0);
   const handleLayout = (event: any) => {
-    console.log(event.nativeEvent.layout.width);
     const layoutWidth = event.nativeEvent.layout.width;
     viewWidth.current = layoutWidth;
     // 初始位置
@@ -65,7 +64,6 @@ const TabView = (prop:TabsProp) => {
     onPanResponderMove: (evt, gestureState) => {
 
       const { dx,dy, vx } = gestureState;
-      console.log('tabview onMove',dx,dy, )
       const direction = getDirectionByCoord({x:dx,y:dy});
       // 当在边界滑动时，交出控制权
       let barTargetDX = 0;
@@ -123,8 +121,6 @@ const TabView = (prop:TabsProp) => {
       TabView.canTabViewRespond = true
     },
     onPanResponderRelease: (evt, gestureState) => {
-      console.log('tabView release')
-
       const { dx, dy, vx } = gestureState;
       let sign = -Math.sign(dx);
       // 越界
