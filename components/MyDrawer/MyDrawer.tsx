@@ -10,6 +10,7 @@ import {
   LogBox,Vibration
 } from "react-native";
 import * as Haptics from 'expo-haptics';
+import { getDirectionByCoord, } from "@/utils/panDirection";
 
 LogBox.ignoreLogs([]);
 const HapticsOpenChange = ()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
@@ -106,37 +107,30 @@ const MyDrawer = (props: Props) => {
   const moveEvent = Animated.event([null, { dx: pan.x, dy: pan.y }], {
     useNativeDriver: false,
   });
-  //  默认打开
-  if (isOpen) {
-    Animated.spring(
-      pan, // Auto-multiplexed
-      {
-        toValue: { x: defaultPosition.x, y: defaultPosition.y },
-        bounciness: 0,
-        useNativeDriver: true,
-      }
-    ).start();
-    maskEvent(panThreshold);
-  }
+  useEffect(()=>{
+    //  默认打开
+    if (isOpen) {
+      Animated.spring(
+        pan, // Auto-multiplexed
+        {
+          toValue: { x: defaultPosition.x, y: defaultPosition.y },
+          bounciness: 0,
+          useNativeDriver: true,
+        }
+      ).start();
+      maskEvent(panThreshold);
+    }
+  },[isOpen])
+  
   const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        canDrawerRespond = true;
-        return false
-      },
-      onMoveShouldSetPanResponder: (evt, gestureState) => canDrawerRespond,
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onPanResponderTerminationRequest:()=> !canDrawerRespond,
-      onPanResponderGrant: (evt, gestureState) => {
-        canDrawerRespond = true
-        console.log('drawer grant')
-      },
-      onPanResponderReject: (evt, gestureState) => {
-        console.log('drawer reject')
-      },
       onPanResponderMove: (evt, gestureState) => {
-        console.log('drawer onMove',)
         let { dx, dy } = gestureState;
+        const direction = getDirectionByCoord({x:dx,y:dy});
         // 左右拉动时，阻止上下动
-        if (["left", "right"].includes(side!)) {
+        if (['left', "right"].includes(side!)) {
           dy = 0;
         }
         // 上下动时，阻止左右动
@@ -171,6 +165,7 @@ const MyDrawer = (props: Props) => {
         ) {
           return;
         }
+        
         setOnTouch(true);
         moveEvent(evt, { dx: dx + offset.x, dy: dy + offset.y });
         let p = mapMask(side!, dx, dy, panThreshold!,isOpen);
@@ -218,7 +213,6 @@ const MyDrawer = (props: Props) => {
             break;
         }
         console.log(nextXpositive, nextXnegative, nextYpositive, nextYnegative);
-        Vibration.vibrate(5000)
         if (
           nextXpositive + nextXnegative + nextYpositive + nextYnegative ==
           0
@@ -276,12 +270,6 @@ const MyDrawer = (props: Props) => {
         console.log('Terminate')
       }
     });
-  const maskPanResponder = useRef(
-    PanResponder.create({
-      // onStartShouldSetPanResponder: (evt, gestureState) => false,
-      // onMoveShouldSetPanResponder: (evt, gestureState) => false,
-    })
-  ).current;
   return (
     <Animated.View
       style={{
@@ -293,8 +281,6 @@ const MyDrawer = (props: Props) => {
       <Animated.View style={drawerStyle}>{content}</Animated.View>
       {/*  @ts-ignore 遮罩*/}
       <Animated.View
-        {...maskPanResponder.panHandlers}
-        onTouchStart={() => console.log("press")}
         ref={maskRef}
         style={{
           ...style["mask"],

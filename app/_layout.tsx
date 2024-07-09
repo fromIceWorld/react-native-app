@@ -13,6 +13,8 @@ import { useColorScheme } from "@/components/useColorScheme";
 import useDrawerStore from "@/Store/drawerState";
 import UserDrawer from "@/components/UserDrawer/Drawer";
 import MyDrawer from "@/components/MyDrawer/MyDrawer";
+import Drawer from 'react-native-drawer'
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,

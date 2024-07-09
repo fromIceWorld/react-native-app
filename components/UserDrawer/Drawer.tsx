@@ -1,14 +1,19 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import {useState,useEffect} from 'react'
 import {
   ScrollView,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity,
+  TouchableOpacity,Appearance
 } from "react-native";
 import { Text, View } from "@/components/Themed";
-
+import type {
+  AppearancePreferences,
+  ColorSchemeName,
+  // @ts-ignore
+} from 'react-native/Libraries/Utilities/NativeAppearance';
 import UserAvatar from "../user/UserAvatar";
 import * as Haptics from 'expo-haptics';
 
@@ -33,7 +38,16 @@ const Menus = [
   },
 ];
 
+
 const UserDrawer = () => {
+  const [nativeColorScheme, setNativeColorScheme] = useState<ColorSchemeName | null>(null);
+  useEffect(() => {
+    Appearance.setColorScheme(nativeColorScheme);
+  }, [nativeColorScheme]);
+  function changeThemed(){
+    Haptics.selectionAsync();
+    setNativeColorScheme(nativeColorScheme == 'dark' ? 'light' : 'dark');
+  } 
   return (
     <View style={UserStyles["container"]}>
       <TouchableOpacity>
@@ -69,7 +83,7 @@ const UserDrawer = () => {
           ))}
         </View>
       </ScrollView>
-      <TouchableOpacity style={UserStyles["themeChange"]} onPress={()=>Haptics.selectionAsync()}>
+      <TouchableOpacity style={UserStyles["themeChange"]} onPress={()=>changeThemed()}>
         <Feather name="sun" size={24} color="black" />
       </TouchableOpacity>
     </View>

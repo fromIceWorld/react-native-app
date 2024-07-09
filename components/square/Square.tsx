@@ -1,8 +1,9 @@
-import { StyleSheet,View,ScrollView,Text,PanResponder,Animated,FlatList,SafeAreaView,TouchableWithoutFeedback } from "react-native";
+import { StyleSheet,View,ScrollView,PanResponder,Animated,FlatList,SafeAreaView,TouchableWithoutFeedback } from "react-native";
 import PersonalEvent from "@/components/PersonalEvent/PersonalEvent";
 import TabView from "@/components/tabView";
 import { useState,useRef } from "react";
 import MyDrawer from "../MyDrawer/MyDrawer";
+import { Text } from "../Themed";
 import { Diriction, getDirectionByCoord } from "@/utils/panDirection";
 
 const Style = StyleSheet.create({
@@ -101,7 +102,7 @@ const Square = ()=>{
     },
     {
       label:'关注',
-      component: <Text>关注</Text>
+      component: <Text lightColor="red" darkColor="blue">关注</Text>
     },
   ]
  return <TabView tabs={tabs}></TabView>

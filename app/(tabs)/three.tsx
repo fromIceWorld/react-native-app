@@ -22,13 +22,22 @@ const _pan = PanResponder.create({
   onStartShouldSetPanResponder: () => true,
   onMoveShouldSetPanResponder: () => true,
   onPanResponderTerminationRequest: (evt, gesture) => false,
+  onMoveShouldSetPanResponderCapture:()=>true,
+  onStartShouldSetPanResponderCapture:()=>true,
+
 });
 
 const Three = () => {
   const ContainerPan = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: (evt) => {
+      console.log(evt.nativeEvent.target)
+      return true
+    },
     onPanResponderTerminationRequest: () => false,
+    onPanResponderMove:(evt,gesture)=>{
+      console.log('move')
+    }
   });
   function onScroll() {
     console.log("onScroll");
@@ -48,13 +57,15 @@ const Three = () => {
       <Animated.View style={Style["container"]} {...ContainerPan.panHandlers}>
         <FlatList
           data={messages}
+          onStartShouldSetResponder={()=>true}
+          onMoveShouldSetResponder={()=>true}
           onViewableItemsChanged={onScroll}
           onScrollEndDrag={onScrollEndDrag}
           onPointerDown={chartWithany}
           renderItem={({ item }) => (
-            <View {..._pan.panHandlers} key={item.id}>
+            <Animated.View {..._pan.panHandlers} key={item.id}>
               <MessageItem></MessageItem>
-            </View>
+            </Animated.View>
           )}
         ></FlatList>
       </Animated.View>

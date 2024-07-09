@@ -7,7 +7,7 @@ const UserAvatar = () => {
       <Avatar
         avatarStyle={Style["avatar"]}
         size={36}
-        source={require('@/assets/images/adaptive-icon.png')}
+        source={require('@/assets/images/dragen.png')}
         ></Avatar>
     </View>
   );

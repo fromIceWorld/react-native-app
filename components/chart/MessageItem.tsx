@@ -48,7 +48,7 @@ function chartWithany() {
   });
 }
 const MessageItem = () => {
-    
+
   return (
     <TouchableHighlight
       activeOpacity={0.6}
@@ -60,7 +60,7 @@ const MessageItem = () => {
           <Avatar
             avatarStyle={Style["avatorImg"]}
             size={48}
-            source={require("@/assets/images/avator.jpg")}
+            source={require("@/assets/images/dragen.png")}
           />
         </View>
         <View style={Style["textMessage"]}>
