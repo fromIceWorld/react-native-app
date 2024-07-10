@@ -4,6 +4,11 @@ enum Diriction{
     bottom,
     left
 }
+enum Xdirection{
+    right = 1,
+    left = 3,
+    none = 5
+}
 interface Coordinate {
     x:number, //x轴平移距离 +向右；-向左
     y:number, // y轴平移距离 + 向上;-向下
@@ -32,4 +37,7 @@ function getDirectionByCoord(coord:Coordinate):Diriction{
         return Diriction.left
     }
 }
-export {getDirectionByCoord,Diriction}
+function getXdirectionByDX(dx:number):Xdirection{
+    return dx >0 ? Xdirection.right : Xdirection.left
+}
+export {getDirectionByCoord,getXdirectionByDX,Xdirection,Diriction}
