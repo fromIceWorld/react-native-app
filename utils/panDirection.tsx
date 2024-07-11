@@ -1,8 +1,9 @@
-enum Diriction{
+enum Direction{
     up,
     right,
     bottom,
-    left
+    left,
+    none
 }
 enum Xdirection{
     right = 1,
@@ -24,20 +25,20 @@ function getAngle(x:number,y:number){
 // [-135,-45]向下
 // [0,45][-45,0] 向右
 // [135,180] [-180,-135]
-function getDirectionByCoord(coord:Coordinate):Diriction{
+function getDirectionByCoord(coord:Coordinate):Direction{
     const {x,y} = coord;
     const angle = getAngle(x,y);
     if(angle >= 30 && angle <= 150){
-        return Diriction.up
+        return Direction.up
     }else if(angle >= -150 && angle <= -30){
-        return Diriction.bottom;
+        return Direction.bottom;
     }else if((angle >=0 && angle<=30) || (angle>=-30 && angle <=0)){
-        return Diriction.right
+        return Direction.right
     }else{
-        return Diriction.left
+        return Direction.left
     }
 }
 function getXdirectionByDX(dx:number):Xdirection{
     return dx >0 ? Xdirection.right : Xdirection.left
 }
-export {getDirectionByCoord,getXdirectionByDX,Xdirection,Diriction}
+export {getDirectionByCoord,getXdirectionByDX,Xdirection,Direction}
