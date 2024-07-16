@@ -69,7 +69,8 @@ enum ImageSurce {
 interface Prop{
     images:any[],
     index:number,
-    visible:boolean
+    visible:boolean,
+    onClose:()=>void
 }
 
 const images:any[] = [
@@ -96,8 +97,14 @@ let viewInit = 0;
 let layout:any[] = [];
 let imageDirection:Direction = Direction.none;
 const ImageView = (prop:Prop)=>{
-    const [visible,setVisible] = useState(!!prop.visible);
-
+    console.log('prop',prop)
+    const [visible,setVisible] = useState(prop.visible);
+    console.log(visible,'visible')
+    useEffect(()=>{
+        console.log('prop 修改')
+        setVisible(prop.visible);
+    },[prop.visible])
+   
     const [index,setIndex] = useState(0);
     const scale = useRef(new Animated.Value(100)).current;
     let shadowOpacity = useRef(new Animated.Value(0)).current,
@@ -117,6 +124,7 @@ const ImageView = (prop:Prop)=>{
             transformXYvalue.push({x:0,y:0,s:1})
             return new Animated.ValueXY()
           })).current;
+        
     // 控制图片在自身区域内的平移缩放
     const imagePans = PanResponder.create({
         onStartShouldSetPanResponder:()=>true,
@@ -195,23 +203,40 @@ const ImageView = (prop:Prop)=>{
             // 释放时，根据移动状态判定
             // @ts-ignore,
             if(imageDirection == Direction.bottom){
-                if(vy > 0){
-                    setVisible(false);
-                }else{
-                    Animated.spring(tansformXYs[index],{
-                        toValue:{x:0,y:0},
-                        friction:20,
-                        tension:60,
-                        useNativeDriver:false
-                    }).start();
-                    Animated.spring(shadowOpacity,{
-                        toValue:0,
-                        friction:20,
-                        tension:60,
-                        useNativeDriver:false
-                    }).start()
-                }
                 
+                if(vy > 0){
+                    Animated.parallel([Animated.timing(tansformXYs[index],{
+                            toValue:{x:0,y:0},
+                            duration:250,
+                            useNativeDriver:false
+                        }),
+                        Animated.timing(shadowOpacity,{
+                            toValue:0,
+                            duration:125,
+                            useNativeDriver:false
+                        })
+                    ]).start(()=>{
+                        prop.onClose()
+                    })
+                    
+                }else{
+                    Animated.parallel([Animated.spring(tansformXYs[index],{
+                        toValue:{x:0,y:0},
+                            friction:20,
+                            tension:60,
+                            useNativeDriver:false
+                        }),
+                        Animated.spring(shadowOpacity,{
+                            toValue:0,
+                            friction:20,
+                            tension:60,
+                            useNativeDriver:false
+                        })
+                    ]).start()
+                }
+            
+                
+                 
             }else if([Direction.left,Direction.right].includes(imageDirection)){
                 const {width:imgWidth,height:imaHeight} = layout[index];
                 if(Math.abs(transformXYvalue[index].x + dx) >= ((Math.min(scale._value/100,2) - 1)*imgWidth)/2){
@@ -340,4 +365,5 @@ const ImageView = (prop:Prop)=>{
                             </View> 
                         :   ''
 }
+
 export default ImageView

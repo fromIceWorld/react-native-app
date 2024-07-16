@@ -2,7 +2,8 @@ import {Text,View,StyleSheet,ActivityIndicator, TouchableOpacity,Pressable,Touch
 import { Avatar } from '@rneui/themed';
 import { Image } from '@rneui/themed';
 import Feather from "@expo/vector-icons/Feather";
-
+import MyImage from '../image/image';
+import MyVideo from '../video/Video';
 
 const PersonalEvent = ()=>{
     return <>
@@ -14,75 +15,74 @@ const PersonalEvent = ()=>{
                 rounded
                 source={require('@/assets/images/favicon.png')}
                 />
+            <View style={Style['information']}>
+                <Text style={Style['name']}>Bob</Text>
+                <Text  style = {{...Style['subInformation'],...Style['id']}}>@ufydbshd</Text>
+                <Text style={{...Style['splitPod'],...Style['subInformation']}}>·</Text>
+                <Text style = {{...Style['subInformation'],...Style['time']}}>2024/7/3</Text>
+            </View>
         </View>
         {/* 信息 */}
-     
-            <View  style={Style['comment']} >
-                <View style={Style['information']}>
-                    <Text style={Style['name']}>Bob</Text>
-                    <Text  style = {{...Style['subInformation'],...Style['id']}}>@ufydbshd</Text>
-                    <Text style={{...Style['splitPod'],...Style['subInformation']}}>·</Text>
-                    <Text style = {{...Style['subInformation'],...Style['time']}}>2024/7/3</Text>
-                </View>
-                {/* 文本 */}
-                <Pressable>
-                    <Text>今天发生了很好的事情😁</Text>
-                </Pressable>
-                {/* 图片 */}
-                <View style={Style['imgs']}>
-                    {/* <Image
-                        style={Style['img']}
-                        source={{
-                        uri: 'https://reactnative.dev/img/tiny_logo.png',
-                        }}
-                    /> */}
-                    <Image
-                            source={require('@/assets/images/favicon.png')}
-                            containerStyle={Style['item']}
-                            PlaceholderContent={<ActivityIndicator />}
-                        />
-                </View>
-                {/* 相关评论 */}
-                <View style={Style['btns']}>
-                    <TouchableOpacity style={Style['btn']}>
-                        <Feather name="message-circle" size={20} ></Feather><Text style={Style['typeCount']}>12</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={Style['btn']}>
-                        <Feather name="heart" size={18} ></Feather><Text style={Style['typeCount']}>42万</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={Style['btn']}>
-                        <Feather name="paperclip" size={18} ></Feather><Text style={Style['typeCount']}>12</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={Style['btn']}>
-                        <Feather name="bar-chart-2" size={18} ></Feather><Text style={Style['typeCount']}>12</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={Style['btn']}>
-                        <Feather name="tag" size={18}></Feather><Text style={Style['typeCount']}>12</Text>
-                    </TouchableOpacity>
-                </View>
+        <View  style={Style['comment']} >
+            {/* 文本 */}
+            <Pressable>
+                <Text>今天发生了很好的事情😁</Text>
+            </Pressable>
+            {/* 图片 */}
+            <View style={Style['imgs']}>
+                {/* <Image
+                    style={Style['img']}
+                    source={{
+                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                    }}
+                /> */}
+                <MyImage></MyImage>
+                <MyVideo></MyVideo>
             </View>
+            {/* 相关评论 */}
+            <View style={Style['btns']}>
+                <TouchableOpacity style={Style['btn']}>
+                    <Feather name="message-circle" size={20} ></Feather><Text style={Style['typeCount']}>12</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={Style['btn']}>
+                    <Feather name="heart" size={18} ></Feather><Text style={Style['typeCount']}>42万</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={Style['btn']}>
+                    <Feather name="paperclip" size={18} ></Feather><Text style={Style['typeCount']}>12</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={Style['btn']}>
+                    <Feather name="bar-chart-2" size={18} ></Feather><Text style={Style['typeCount']}>12</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={Style['btn']}>
+                    <Feather name="tag" size={18}></Feather><Text style={Style['typeCount']}>12</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
 
     </View></>
 }
 const Style = StyleSheet.create({
     card:{
         display:'flex',
-        flexDirection:'row',
         paddingTop:6,
     },
     avater:{
+        marginLeft:4,
         width:50,
         display:'flex',
+        flexDirection:'row',
         alignItems:'center'
     },
     comment:{
+        marginTop:10,
+        paddingLeft:10,
         flex:1,
         width:'100%'
     },
     information:{
         display:'flex',
         flexDirection:'row',
-        marginBottom:2
+        marginLeft:6
     },
     name:{
         fontWeight:'bold',
@@ -102,6 +102,8 @@ const Style = StyleSheet.create({
         color:'#606770'
     },
     imgs:{
+        height:'auto',
+        width:'100%',
         paddingTop:6
     },
     img:{

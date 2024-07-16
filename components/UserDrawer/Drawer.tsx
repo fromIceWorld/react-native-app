@@ -17,7 +17,7 @@ import type {
 import UserAvatar from "../user/UserAvatar";
 import MyDrawer from "../MyDrawer/MyDrawer";
 import * as Haptics from 'expo-haptics';
-import { getDirectionByCoord ,Diriction} from "@/utils/panDirection";
+import { getDirectionByCoord ,Direction} from "@/utils/panDirection";
 
 const Menus = [
   {
@@ -59,7 +59,7 @@ const UserDrawer = () => {
     onPanResponderMove:(evt,gesture)=>{
       const {dx,dy} = gesture;
       const direction = getDirectionByCoord({x:dx,y:dy});
-      if(direction == Diriction.left && dx < -20){
+      if(direction == Direction.left && dx < -20){
         releasePanRespond = false
       }
     },

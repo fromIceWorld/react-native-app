@@ -38,7 +38,6 @@ const style = StyleSheet.create({
     backgroundColor: "#000",
   },
   main: {
-    backgroundColor: "red",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, PanResponder, Animated } from "react-native";
 import { useState, useRef } from "react";
 import MyDrawer from "./MyDrawer/MyDrawer";
-import { Diriction, getDirectionByCoord } from "@/utils/panDirection";
+import { Direction, getDirectionByCoord } from "@/utils/panDirection";
 
 interface TabProp{
   label:string,
@@ -67,7 +67,7 @@ const TabView = (prop:TabsProp) => {
       const direction = getDirectionByCoord({x:dx,y:dy});
       // 当在边界滑动时，交出控制权
       let barTargetDX = 0;
-      if((tabIndex == 0 && direction == Diriction.right) || (tabIndex == tabCount.current-1 && direction == Diriction.left)){
+      if((tabIndex == 0 && direction == Direction.right) || (tabIndex == tabCount.current-1 && direction == Direction.left)){
         TabView.canTabViewRespond = false
         barTargetDX = 0;
         return
@@ -200,7 +200,6 @@ const Style = StyleSheet.create({
     justifyContent: "space-around",
     borderBottomWidth: 1,
     borderBottomColor: "#0505050f",
-    color: "red",
   },
   scrollLabel: {
     textAlign: "center",
@@ -222,7 +221,6 @@ const Style = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     height: '100%',
-    backgroundColor: "red",
   },
   tabOne: {
     width: "100%",

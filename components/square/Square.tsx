@@ -4,12 +4,14 @@ import TabView from "@/components/tabView";
 import { useState,useRef } from "react";
 import MyDrawer from "../MyDrawer/MyDrawer";
 import { Text } from "../Themed";
-import { Diriction, getDirectionByCoord } from "@/utils/panDirection";
+import { Direction, getDirectionByCoord } from "@/utils/panDirection";
 import MyImage from '@/components/image/image'
+import MyVideo from "../video/Video";
 
 const Style = StyleSheet.create({
     container:{
         flex: 1,
+        paddingRight:10,
         marginBottom:45,
     },
     messageCard:{
@@ -17,7 +19,8 @@ const Style = StyleSheet.create({
       borderBottomColor:'#0505050f',
       paddingTop:6,
       paddingBottom:8,
-      overflow:'hidden'
+      overflow:'hidden',
+      flex:1
     },
    
   });
@@ -45,7 +48,7 @@ const Square = ()=>{
     onPanResponderMove:(evt,gesture)=>{
       const {dx,dy} = gesture;
       const direction = getDirectionByCoord({x:dx,y:dy});
-      if([Diriction.bottom,Diriction.up].includes(direction)){
+      if([Direction.bottom,Direction.up].includes(direction)){
         TabView.canTabViewRespond = false;
         MyDrawer.canDrawerRespond = false;
         flastCanRespond = true
@@ -96,7 +99,7 @@ const Square = ()=>{
                           renderItem={({item}) => <Animated.View style={Style['messageCard']} 
                          {...viewItemPan.panHandlers}
                                                   >
-                                                      <PersonalEvent ></PersonalEvent>
+                                                      <PersonalEvent></PersonalEvent>
                                                   </Animated.View>}
                           keyExtractor={item => item.id}
                       />
@@ -107,26 +110,24 @@ const Square = ()=>{
       label:'关注',
       component: 
       <>
-            <Text lightColor="red" darkColor="blue">关注</Text>
-           <MyImage></MyImage>
-        <SafeAreaView style={Style['container']}>
-                    <FlatList
-                          onScroll={onScroll}
-                          onScrollEndDrag={onScrollEndDrag}
-                          onRefresh={onRefresh}
-                          refreshing={isRefresh}
-                          onEndReached={onEndReached}
-                          onEndReachedThreshold={2}
-                          data={Messages}
-                          renderItem={({item}) => <Animated.View style={Style['messageCard']} 
-                         {...viewItemPan.panHandlers}
-                                                  >
-                                                      <PersonalEvent ></PersonalEvent>
-                                                  </Animated.View>}
-                          keyExtractor={item => item.id}
-                      />
-                        
-                </SafeAreaView>
+            <SafeAreaView style={Style['container']}>
+              <FlatList
+                    onScroll={onScroll}
+                    onScrollEndDrag={onScrollEndDrag}
+                    onRefresh={onRefresh}
+                    refreshing={isRefresh}
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={2}
+                    data={Messages}
+                    renderItem={({item}) => <Animated.View style={Style['messageCard']} 
+                    {...viewItemPan.panHandlers}
+                                            >
+                                                <PersonalEvent ></PersonalEvent>
+                                            </Animated.View>}
+                    keyExtractor={item => item.id}
+                />
+                  
+           </SafeAreaView>
       </>
     },
   ]

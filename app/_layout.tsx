@@ -14,8 +14,10 @@ import useDrawerStore from "@/Store/drawerState";
 import UserDrawer from "@/components/UserDrawer/Drawer";
 import MyDrawer from "@/components/MyDrawer/MyDrawer";
 import Drawer from 'react-native-drawer'
-import ImageViewContext from "@/Context/ImageViewContext";
+import ImageViewContext, { ImageViewProvider, useImageContext } from "@/Context/ImageViewContext";
 import ImageView from "@/components/image/ImageView";
+import ImageDisplay from "@/components/image/ImageDisplay";
+import MyVideo from "@/components/video/Video";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -62,14 +64,9 @@ function RootLayoutNav() {
   function onDrawerClose() {
     setOpen(false);
   }
-  const [imageViewConfig,setImageViewConfig] = useState({
-    images:[],
-    index:0,
-    visible:true
-  }); 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <ImageViewContext.Provider value={imageViewConfig}>
+      <ImageViewProvider>
         {/* 抽屉 */}
         <MyDrawer
           content={<UserDrawer></UserDrawer>}
@@ -82,8 +79,8 @@ function RootLayoutNav() {
           </Stack>
         </MyDrawer>
         {/* 照片查看器 */}
-        <ImageView {...imageViewConfig}></ImageView>
-      </ImageViewContext.Provider>
+        <ImageDisplay></ImageDisplay>
+      </ImageViewProvider>
     
       {/* <Drawer
         type="static"
@@ -115,6 +112,5 @@ const drawerStyles = {
   main: {
     paddingLeft: 0,
     padding: 30,
-    backgroudColor: "red",
   },
 };
