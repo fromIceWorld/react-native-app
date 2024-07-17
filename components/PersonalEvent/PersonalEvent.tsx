@@ -4,7 +4,7 @@ import { Image } from '@rneui/themed';
 import Feather from "@expo/vector-icons/Feather";
 import MyImage from '../image/image';
 import MyVideo from '../video/Video';
-
+import ImageGrid from '../image/ImageGrid';
 const PersonalEvent = ()=>{
     return <>
     <View style={Style['card']}>
@@ -15,28 +15,24 @@ const PersonalEvent = ()=>{
                 rounded
                 source={require('@/assets/images/favicon.png')}
                 />
+        </View>
+        {/* 信息 */}
+        <View  style={Style['comment']} >
             <View style={Style['information']}>
                 <Text style={Style['name']}>Bob</Text>
                 <Text  style = {{...Style['subInformation'],...Style['id']}}>@ufydbshd</Text>
                 <Text style={{...Style['splitPod'],...Style['subInformation']}}>·</Text>
                 <Text style = {{...Style['subInformation'],...Style['time']}}>2024/7/3</Text>
             </View>
-        </View>
-        {/* 信息 */}
-        <View  style={Style['comment']} >
             {/* 文本 */}
             <Pressable>
                 <Text>今天发生了很好的事情😁</Text>
             </Pressable>
+           
             {/* 图片 */}
             <View style={Style['imgs']}>
-                {/* <Image
-                    style={Style['img']}
-                    source={{
-                    uri: 'https://reactnative.dev/img/tiny_logo.png',
-                    }}
-                /> */}
-                <MyImage></MyImage>
+                 {/* 图片grid */}
+                 <ImageGrid></ImageGrid>
                 <MyVideo></MyVideo>
             </View>
             {/* 相关评论 */}
@@ -58,25 +54,26 @@ const PersonalEvent = ()=>{
                 </TouchableOpacity>
             </View>
         </View>
+        
 
     </View></>
 }
 const Style = StyleSheet.create({
     card:{
         display:'flex',
+        flexDirection:'row',
         paddingTop:6,
     },
     avater:{
         marginLeft:4,
-        width:50,
+        width:40,
         display:'flex',
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'flex-start'
     },
     comment:{
-        marginTop:10,
-        paddingLeft:10,
         flex:1,
+        paddingRight:10,
         width:'100%'
     },
     information:{
