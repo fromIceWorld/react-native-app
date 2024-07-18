@@ -1,16 +1,18 @@
-import * as React from 'react';
+import {useRef,useState,useEffect} from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 
+import MyImage from '../image/image';
+
 export default function MyVideo() {
-  const video = React.useRef(null);
-  const [status, setStatus] = React.useState({
-    isPlaying:false
-  });
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
+ 
   return (
     <View style={styles.container}>
       <Video
         ref={video}
+        posterSource={require('@/assets/images/humen.jpg')}
         style={styles.video}
         source={{
           uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
@@ -33,11 +35,6 @@ const styles = StyleSheet.create({
   video: {
     alignSelf: 'center',
     width: '100%',
-    height: 200,
-  },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: '100%',
   },
 });

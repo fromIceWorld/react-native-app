@@ -2,9 +2,12 @@ import {StyleSheet,View} from 'react-native'
 import { Image } from 'expo-image'
 import MyImage from './image';
 import { height } from '@/utils/imageSize';
+import MyVideo from '../video/Video';
+import VideoPoster from '../video/VideoPoster';
+import { memo } from 'react'
 
 const imgs = new Array(4).fill(0);
-const ImageGrid = ()=>{
+const ImageGrid = memo(()=>{
      {
         switch(imgs.length){
             case 3:
@@ -17,7 +20,7 @@ const ImageGrid = ()=>{
                 return <ImageGrid4></ImageGrid4>; 
         }
     }
-}
+})
 // 4宫格
 const Grid4Style = StyleSheet.create({
     container:{
@@ -56,7 +59,7 @@ const ImageGrid4 = ()=>
                     <View  style={{...Grid4Style['grid4Container'],...Grid4Style['gridBottom']}}>
                         {imgs.slice(2,4).map((img,index)=>{
                             return <View  key={index} style={{...Grid4Style['img'],marginLeft:index == 1 ? 1.5 : 0,marginRight:index == 0 ? 1.5 : 0 }}>
-                                        <MyImage source={require('@/assets/images/nature.jpg')}></MyImage>
+                                        {index == 0 ? <VideoPoster></VideoPoster> : <MyImage source={require('@/assets/images/humen.jpg')}></MyImage>}
                             </View>
                         })}
                     </View>

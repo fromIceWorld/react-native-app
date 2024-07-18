@@ -101,16 +101,4 @@ function RootLayoutNav() {
   );
 }
 
-const drawerStyles = {
-  drawer: {
-    color: "blue",
-    shadowRadius: 3,
-    opacity: 0.8,
-    paddingTop: 50,
-    paddingLeft: 5,
-  },
-  main: {
-    paddingLeft: 0,
-    padding: 30,
-  },
-};
+

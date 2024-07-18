@@ -7,9 +7,9 @@ const ToUser = ()=>{
     const params = useLocalSearchParams();
     useEffect(()=>{
         navigation.setOptions({ 
-            title:params.id,
+            title:params.name,
          });
     },[navigation])
-    return <Text>ToUser</Text>
+    return <Text>{params.id}</Text>
 }
 export default ToUser

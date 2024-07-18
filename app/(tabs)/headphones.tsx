@@ -1,19 +1,14 @@
 
 import { StyleSheet, View, Text } from 'react-native';
 import PagerView from 'react-native-pager-view';
-import { Image } from 'expo-image';
+import MyVideo from '@/components/video/Video';
 
 export default function Space() {
   return (
     <View style={styles.container}>
       <PagerView style={styles.container} initialPage={0}>
         <View style={styles.page} key="1">
-        <Image
-            style={styles.image}
-            source="https://picsum.photos/seed/696/3000/2000"
-            contentFit="cover"
-            transition={1000}
-        />
+       <MyVideo></MyVideo>
           <Text>Swipe ➡️</Text>
         </View>
         <View style={styles.page} key="2">

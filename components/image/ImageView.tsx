@@ -5,6 +5,7 @@ import {Image} from 'expo-image'
 import { StyleSheet,View,Dimensions, PanResponder, Animated,SafeAreaView, Platform, StatusBar,Image as ImageR } from "react-native"
 import { distance2d } from "@/utils/panScale"
 import { Direction, Xdirection, getDirectionByCoord, getXdirectionByDX } from "@/utils/panDirection"
+import MyVideo from "../video/Video"
 
 const {width,height} = Dimensions.get('window')
 
@@ -203,7 +204,6 @@ const ImageView = (prop:Prop)=>{
             // 释放时，根据移动状态判定
             // @ts-ignore,
             if(imageDirection == Direction.bottom){
-                
                 if(vy > 0){
                     Animated.parallel([Animated.timing(tansformXYs[index],{
                             toValue:{x:0,y:0},
@@ -346,7 +346,7 @@ const ImageView = (prop:Prop)=>{
                                                                 }}
                                                                 onLayout={(e)=>cacheViewX(e,i)}
                                                                 >
-                                                            <Image
+                                                            {i <=1 ? <Image
                                                                 style={{
                                                                     ...Style.image,
                                                                     height:item.height,
@@ -355,8 +355,8 @@ const ImageView = (prop:Prop)=>{
                                                                 source={item.url}
                                                                 placeholder={blurhash}
                                                                 contentFit="contain"
-                                                                transition={1000}
-                                                            />
+                                                                transition={500}
+                                                            /> : <MyVideo></MyVideo>}
                                                     </Animated.View>
                                                 </View>
                                     })

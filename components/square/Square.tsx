@@ -10,7 +10,7 @@ import MyVideo from "../video/Video";
 
 const Style = StyleSheet.create({
     container:{
-        flex: 1,
+      height:'100%',
         paddingRight:10,
         marginBottom:45,
     },
@@ -29,9 +29,10 @@ const Style = StyleSheet.create({
 
 
   let flastCanRespond = true;
-
+ let id = 0
 const Square = ()=>{
-  const [Messages,setMessages] = useState(new Array(30).fill(0).map(()=>({id:Math.random()+''})))
+  const [Messages,setMessages] = useState(new Array(2).fill(0).map(()=>({id:String(id++),message:Math.floor(Math.random()*100),like:Math.floor(Math.random()*100),forward:Math.floor(Math.random()*100),heat:Math.floor(Math.random()*100),tag:Math.floor(Math.random()*10),iLike:false})));
+  const [Messages2,setMessages2] = useState(new Array(2).fill(0).map(()=>({id:String(id++),message:Math.floor(Math.random()*100),like:Math.floor(Math.random()*100),forward:Math.floor(Math.random()*100),heat:Math.floor(Math.random()*100),tag:Math.floor(Math.random()*10),iLike:false})));
   const [isRefresh,setIsRefresh] = useState(false);
 
   const viewItemPan =PanResponder.create({
@@ -69,9 +70,10 @@ const Square = ()=>{
     },1000)
   }
   function onEndReached(){
-    setTimeout(()=>{
-      setMessages((state)=>([...state]).concat(new Array(100).fill(0).map(()=>({id:Math.random()+''}))))
-    },2000)
+    // setMessages((state)=>([...state]).concat(new Array(5).fill(0).map(()=>({id:String(id++)}))))
+  }
+  function onEndReached2(){
+    //  setMessages2((state)=>([...state]).concat(new Array(5).fill(0).map(()=>({id:String(id++)}))))
   }
   function onScroll(){
     TabView.canTabViewRespond = false;
@@ -86,7 +88,7 @@ const Square = ()=>{
   }
   const tabs = [
     {
-      label:'广场',
+      label:'发现',
       component: <SafeAreaView style={Style['container']}>
                     <FlatList
                           onScroll={onScroll}
@@ -94,12 +96,12 @@ const Square = ()=>{
                           onRefresh={onRefresh}
                           refreshing={isRefresh}
                           onEndReached={onEndReached}
-                          onEndReachedThreshold={2}
+                          onEndReachedThreshold={0.5}
                           data={Messages}
                           renderItem={({item}) => <Animated.View style={Style['messageCard']} 
-                         {...viewItemPan.panHandlers}
+                                                     {...viewItemPan.panHandlers}
                                                   >
-                                                      <PersonalEvent></PersonalEvent>
+                                                      <PersonalEvent {...item}></PersonalEvent>
                                                   </Animated.View>}
                           keyExtractor={item => item.id}
                       />
@@ -116,13 +118,13 @@ const Square = ()=>{
                     onScrollEndDrag={onScrollEndDrag}
                     onRefresh={onRefresh}
                     refreshing={isRefresh}
-                    onEndReached={onEndReached}
-                    onEndReachedThreshold={2}
-                    data={Messages}
+                    onEndReached={onEndReached2}
+                    onEndReachedThreshold={0.5}
+                    data={Messages2}
                     renderItem={({item}) => <Animated.View style={Style['messageCard']} 
                     {...viewItemPan.panHandlers}
                                             >
-                                                <PersonalEvent ></PersonalEvent>
+                                                <PersonalEvent {...item}></PersonalEvent>
                                             </Animated.View>}
                     keyExtractor={item => item.id}
                 />

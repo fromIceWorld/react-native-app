@@ -5,58 +5,83 @@ import Feather from "@expo/vector-icons/Feather";
 import MyImage from '../image/image';
 import MyVideo from '../video/Video';
 import ImageGrid from '../image/ImageGrid';
-const PersonalEvent = ()=>{
-    return <>
-    <View style={Style['card']}>
-        {/* 事件人 */}
-        <View style={Style['avater']}>
-            <Avatar
-                size={38}
-                rounded
-                source={require('@/assets/images/favicon.png')}
-                />
-        </View>
-        {/* 信息 */}
-        <View  style={Style['comment']} >
-            <View style={Style['information']}>
-                <Text style={Style['name']}>Bob</Text>
-                <Text  style = {{...Style['subInformation'],...Style['id']}}>@ufydbshd</Text>
-                <Text style={{...Style['splitPod'],...Style['subInformation']}}>·</Text>
-                <Text style = {{...Style['subInformation'],...Style['time']}}>2024/7/3</Text>
-            </View>
-            {/* 文本 */}
-            <Pressable>
-                <Text>今天发生了很好的事情😁</Text>
-            </Pressable>
-           
-            {/* 图片 */}
-            <View style={Style['imgs']}>
-                 {/* 图片grid */}
-                 <ImageGrid></ImageGrid>
-                <MyVideo></MyVideo>
-            </View>
-            {/* 相关评论 */}
-            <View style={Style['btns']}>
-                <TouchableOpacity style={Style['btn']}>
-                    <Feather name="message-circle" size={20} ></Feather><Text style={Style['typeCount']}>12</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={Style['btn']}>
-                    <Feather name="heart" size={18} ></Feather><Text style={Style['typeCount']}>42万</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={Style['btn']}>
-                    <Feather name="paperclip" size={18} ></Feather><Text style={Style['typeCount']}>12</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={Style['btn']}>
-                    <Feather name="bar-chart-2" size={18} ></Feather><Text style={Style['typeCount']}>12</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={Style['btn']}>
-                    <Feather name="tag" size={18}></Feather><Text style={Style['typeCount']}>12</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-        
+import {useState,useEffect,useRef} from 'react'
+import { FontAwesome } from '@expo/vector-icons';
+type Prop = {
+    id:string,
+    message:number,
+    like:number,
+    forward:number,
+    heat:number,
+    tag:number,
+    iLike:boolean
+}
 
-    </View></>
+
+const PersonalEvent = (prop:Prop)=>{
+    const [data,setData] = useState(prop);
+    const like = useRef()
+    useEffect(()=>{
+        setData(prop)
+    },[prop])
+    function likeIt(){
+        setData((data)=>({
+            ...data,
+            like:data.iLike ? data.like - 1 : data.like + 1,
+            iLike:!data.iLike
+        }))
+    }
+    return <View style={Style['card']}>
+                {/* 事件人 */}
+                <View style={Style['avater']}>
+                    <Avatar
+                        size={38}
+                        rounded
+                        source={require('@/assets/images/favicon.png')}
+                        />
+                </View>
+                {/* 信息 */}
+                <View  style={Style['comment']} >
+                    <View style={Style['information']}>
+                        <Text style={Style['name']}>Bob</Text>
+                        <Text  style = {{...Style['subInformation'],...Style['id']}}>@ufydbshd</Text>
+                        <Text style={{...Style['splitPod'],...Style['subInformation']}}>·</Text>
+                        <Text style = {{...Style['subInformation'],...Style['time']}}>2024/7/3</Text>
+                    </View>
+                    {/* 文本 */}
+                    <Pressable>
+                        <Text>今天发生了很好的事情😁</Text>
+                    </Pressable>
+                
+                    {/* 图片 */}
+                    <View style={Style['imgs']}>
+                        {/* 图片grid */}
+                        <ImageGrid></ImageGrid>
+                    </View>
+                    {/* 相关评论 */}
+                    <View style={Style['btns']}>
+                        <TouchableOpacity style={Style['btn']}>
+                            <Feather name="message-circle" size={20} ></Feather><Text style={Style['typeCount']}>{data.message}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={Style['btn']} onPress={likeIt}>
+                            {
+                                data.iLike ? <FontAwesome name="heart" size={18} color="red" /> 
+                                           : <Feather name="heart" size={18}></Feather>
+                            }
+                           <Text style={Style['typeCount']}>{data.like}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={Style['btn']}>
+                            <Feather name="paperclip" size={18} ></Feather><Text style={Style['typeCount']}>{data.forward}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={Style['btn']}>
+                            <Feather name="bar-chart-2" size={18} ></Feather><Text style={Style['typeCount']}>{data.heat}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={Style['btn']}>
+                            <Feather name="tag" size={18}></Feather><Text style={Style['typeCount']}>{data.tag}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
 }
 const Style = StyleSheet.create({
     card:{

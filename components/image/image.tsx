@@ -31,7 +31,6 @@ const MyImage = (prop:Prop)=>{
                 style={{...Style.image}}
                 source={prop.source}
                 placeholder={blurhash}
-                contentFit="contain"
                 transition={1000}
               />
             </Pressable>
