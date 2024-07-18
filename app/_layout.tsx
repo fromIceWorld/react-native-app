@@ -4,20 +4,18 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { Text } from "react-native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "react-native-reanimated";
 import { useColorScheme } from "@/components/useColorScheme";
 import useDrawerStore from "@/Store/drawerState";
 import UserDrawer from "@/components/UserDrawer/Drawer";
 import MyDrawer from "@/components/MyDrawer/MyDrawer";
-import Drawer from 'react-native-drawer'
-import ImageViewContext, { ImageViewProvider, useImageContext } from "@/Context/ImageViewContext";
-import ImageView from "@/components/image/ImageView";
+import  { ImageViewProvider } from "@/Context/ImageViewContext";
 import ImageDisplay from "@/components/image/ImageDisplay";
-import MyVideo from "@/components/video/Video";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -74,7 +72,7 @@ function RootLayoutNav() {
           onClose={onDrawerClose}
         >
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false,title:'' }} />
             <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           </Stack>
         </MyDrawer>

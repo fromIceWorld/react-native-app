@@ -1,12 +1,11 @@
-import { StyleSheet,View,ScrollView,PanResponder,Animated,FlatList,SafeAreaView,TouchableWithoutFeedback } from "react-native";
-import PersonalEvent from "@/components/PersonalEvent/PersonalEvent";
+import { StyleSheet,View,ScrollView,PanResponder,Animated,FlatList,SafeAreaView,TouchableWithoutFeedback, Pressable } from "react-native";
+import PersonalArtical from "@/components/PersonalArtical/PersonalArtical";
 import TabView from "@/components/tabView";
-import { useState,useRef } from "react";
+import { useState } from "react";
 import MyDrawer from "../MyDrawer/MyDrawer";
-import { Text } from "../Themed";
 import { Direction, getDirectionByCoord } from "@/utils/panDirection";
-import MyImage from '@/components/image/image'
-import MyVideo from "../video/Video";
+import { router } from "expo-router";
+
 
 const Style = StyleSheet.create({
     container:{
@@ -22,7 +21,6 @@ const Style = StyleSheet.create({
       overflow:'hidden',
       flex:1
     },
-   
   });
   
  
@@ -86,6 +84,15 @@ const Square = ()=>{
     flastCanRespond = true
 
   }
+  function goArticalDetail(){
+    router.push({
+        pathname: "/artical/Artical",
+        params: {
+          name:'Tom',
+          id: Math.random(),
+        },
+      });
+}
   const tabs = [
     {
       label:'发现',
@@ -101,7 +108,9 @@ const Square = ()=>{
                           renderItem={({item}) => <Animated.View style={Style['messageCard']} 
                                                      {...viewItemPan.panHandlers}
                                                   >
-                                                      <PersonalEvent {...item}></PersonalEvent>
+                                                     <Pressable onPress={goArticalDetail}>
+                                                        <PersonalArtical {...item}></PersonalArtical>
+                                                     </Pressable>
                                                   </Animated.View>}
                           keyExtractor={item => item.id}
                       />
@@ -124,7 +133,9 @@ const Square = ()=>{
                     renderItem={({item}) => <Animated.View style={Style['messageCard']} 
                     {...viewItemPan.panHandlers}
                                             >
-                                                <PersonalEvent {...item}></PersonalEvent>
+                                                <Pressable onPress={goArticalDetail}>
+                                                        <PersonalArtical {...item}></PersonalArtical>
+                                                     </Pressable>
                                             </Animated.View>}
                     keyExtractor={item => item.id}
                 />

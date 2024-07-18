@@ -1,12 +1,12 @@
-import {Text,View,StyleSheet,ActivityIndicator, TouchableOpacity,Pressable,TouchableHighlight } from 'react-native'
+import {Text,View,StyleSheet, TouchableOpacity,Pressable,TouchableHighlight } from 'react-native'
 import { Avatar } from '@rneui/themed';
-import { Image } from '@rneui/themed';
 import Feather from "@expo/vector-icons/Feather";
-import MyImage from '../image/image';
-import MyVideo from '../video/Video';
+
 import ImageGrid from '../image/ImageGrid';
 import {useState,useEffect,useRef} from 'react'
 import { FontAwesome } from '@expo/vector-icons';
+import { router } from "expo-router";
+
 type Prop = {
     id:string,
     message:number,
@@ -17,8 +17,17 @@ type Prop = {
     iLike:boolean
 }
 
+function goArticalDetail(){
+    router.push({
+        pathname: "/artical/Artical",
+        params: {
+          name:'Tom',
+          id: Math.random(),
+        },
+      });
+}
 
-const PersonalEvent = (prop:Prop)=>{
+const PersonalArtical = (prop:Prop)=>{
     const [data,setData] = useState(prop);
     const like = useRef()
     useEffect(()=>{
@@ -33,13 +42,13 @@ const PersonalEvent = (prop:Prop)=>{
     }
     return <View style={Style['card']}>
                 {/* 事件人 */}
-                <View style={Style['avater']}>
-                    <Avatar
-                        size={38}
-                        rounded
-                        source={require('@/assets/images/favicon.png')}
-                        />
-                </View>
+                    <View style={Style['avater']}>
+                        <Avatar
+                            size={38}
+                            rounded
+                            source={require('@/assets/images/favicon.png')}
+                            />
+                    </View>                
                 {/* 信息 */}
                 <View  style={Style['comment']} >
                     <View style={Style['information']}>
@@ -48,17 +57,16 @@ const PersonalEvent = (prop:Prop)=>{
                         <Text style={{...Style['splitPod'],...Style['subInformation']}}>·</Text>
                         <Text style = {{...Style['subInformation'],...Style['time']}}>2024/7/3</Text>
                     </View>
-                    {/* 文本 */}
-                    <Pressable>
+                    <View>
+                        {/* 文本 */}
                         <Text>今天发生了很好的事情😁</Text>
-                    </Pressable>
-                
+                    </View>
                     {/* 图片 */}
                     <View style={Style['imgs']}>
                         {/* 图片grid */}
                         <ImageGrid></ImageGrid>
                     </View>
-                    {/* 相关评论 */}
+                        {/* 相关评论 */}
                     <View style={Style['btns']}>
                         <TouchableOpacity style={Style['btn']}>
                             <Feather name="message-circle" size={20} ></Feather><Text style={Style['typeCount']}>{data.message}</Text>
@@ -80,6 +88,8 @@ const PersonalEvent = (prop:Prop)=>{
                             <Feather name="tag" size={18}></Feather><Text style={Style['typeCount']}>{data.tag}</Text>
                         </TouchableOpacity>
                     </View>
+                    
+                    
                 </View>
             </View>
 }
@@ -156,4 +166,4 @@ const Style = StyleSheet.create({
     }
 
 })
-export default PersonalEvent
+export default PersonalArtical
