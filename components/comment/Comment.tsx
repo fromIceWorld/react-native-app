@@ -1,6 +1,6 @@
 import {Text,StyleSheet,View,TouchableOpacity} from 'react-native'
 import { Avatar } from "@rneui/themed";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign,FontAwesome5} from '@expo/vector-icons';
 import Feather from "@expo/vector-icons/Feather";
 import {useState} from 'react'
 interface Prop{
@@ -16,7 +16,6 @@ const Style = StyleSheet.create({
     comment:{
         display:'flex',
         flexDirection:'row',
-        padding:6
     },
     person:{
        
@@ -25,10 +24,6 @@ const Style = StyleSheet.create({
         fontSize: 14,
         fontWeight: "bold",
         marginRight:2
-    },
-    reply:{
-        // paddingLeft:4,
-        // paddingRight:4
     },
     personinfo:{
         display:'flex',
@@ -65,13 +60,28 @@ const Style = StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
-        opacity:0.8
+        opacity:0.8,
+        marginLeft:10,
     },
     typeCount:{
         marginLeft:3,
         opacity:0.7,
         fontSize:12
     },
+    link:{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'flex-end'
+    },
+    timeinfo:{
+        display:'flex',
+        flexDirection:'row',
+        marginBottom:4
+    },
+    reply:{
+        marginLeft:6
+    }
 
 })
 let s = `“你见，或者不见我，我就在那里，不悲不喜。”大自然中的高山大川、江河湖海、日月星辰，已经存在了成千上万年。星转斗移，沧海桑田，“江山依旧在，几度夕阳红。`
@@ -97,30 +107,30 @@ const CommentItem = (prop:Prop)=>{
                     <View >
                             <View style={Style['personinfo']} >
                                     <Text style={Style['name']}>{prop.name}</Text>
-                                    {prop.replyTo && <AntDesign name="swap" size={12} color="#0000008f" style={Style['replyIcon']}/>}
+                                    {prop.replyTo && <AntDesign name="caretright" size={8} color="#0000008f" style={Style['replyIcon']}/>}
                                     <Text style={Style['reply']}>{prop.replyTo}</Text>
-                                    <Text style={Style['time']}> {prop.time}</Text>
+                                   
                             </View>
                             <View  style={Style['content']}>
                                 <Text >{s}</Text>
                             </View>
                     </View>
                     {/* 按钮 */}
-                    <View>
+                    <View style={Style['link']}>
+                        <View  style={Style['timeinfo']}>
+                            <Text style={Style['time']}> {prop.time}</Text>
+                            <TouchableOpacity style={Style['reply']}>
+                                <FontAwesome5 name="reply" size={12} color="#555b6385"></FontAwesome5>
+                            </TouchableOpacity>
+                        </View>
                         <View style={Style['btns']}>
                                 <TouchableOpacity style={Style['btn']}>
-                                    <Feather name="message-circle" size={16} ></Feather><Text style={Style['typeCount']}>{data.message}</Text>
+                                     <FontAwesome5 name="heart" size={16} color="red" />
                                 </TouchableOpacity>
                                 <TouchableOpacity style={Style['btn']}>
-                                    <Feather name="heart" size={16}></Feather>
-                                    <Text style={Style['typeCount']}>{data.heat}</Text>
+                                    <FontAwesome5 name="heart-broken" size={16} color="red" />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={Style['btn']}>
-                                    <Feather name="paperclip" size={16} ></Feather><Text style={Style['typeCount']}>{data.forward}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={Style['btn']}>
-                                    <Feather name="tag" size={16}></Feather><Text style={Style['typeCount']}>{data.tag}</Text>
-                                </TouchableOpacity>
+                                
                         </View>
                     </View>
                     {/* 回复 */}

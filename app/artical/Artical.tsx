@@ -1,4 +1,4 @@
-import {Text,View,StyleSheet, TouchableOpacity,Pressable,TouchableHighlight,ScrollView } from 'react-native'
+import {Text,View,StyleSheet, TouchableOpacity,FlatList,Pressable,TouchableHighlight,ScrollView } from 'react-native'
 import { Avatar } from '@rneui/themed';
 import Feather from "@expo/vector-icons/Feather";
 import { Stack, useNavigation,useLocalSearchParams } from 'expo-router';
@@ -247,6 +247,7 @@ const Style = StyleSheet.create({
     box:{
         borderBottomWidth:1,
         borderBottomColor:'#0505050f',
+        padding:6
     }
 
 })

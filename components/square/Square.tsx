@@ -82,7 +82,6 @@ const Square = ()=>{
     TabView.canTabViewRespond = true;
     MyDrawer.canDrawerRespond = true; 
     flastCanRespond = true
-
   }
   function goArticalDetail(){
     router.push({
@@ -114,7 +113,6 @@ const Square = ()=>{
                                                   </Animated.View>}
                           keyExtractor={item => item.id}
                       />
-                        
                 </SafeAreaView>
     },
     {
